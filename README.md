@@ -1,5 +1,6 @@
 # Usage
 
+## Local Dev
 Clean:
 ```bash
 rm -rf node_modules
@@ -9,17 +10,27 @@ npm ci
 npm install
 npm build .
 ```
+Update client schema:
+```bash
+npx prisma generate
+```
 Prototype with
 ```bash
 npx prisma db push
 ```
-Commit:
+Commit / create initial tables:
 ```bash
 npx prisma migrate dev
 ```
 ```bash
 npm run dev
 ```
+## Vercel
+Add [build command](https://vercel.com/2blo/before-effects/settings) from [custom npm script](https://github.com/2blo/before-effects/blob/3-document-usage/package.json) according to [Prisma docs](https://www.prisma.io/docs/guides/deployment/deployment-guides/deploying-to-vercel#1-create-and-deploy-the-project-with-the-vercel-deploy-button):
+```bash
+npm run vercel-build
+```
+Warning: Preview deployments have "random" URLs that wont be listed in [Google Cloud credentials](https://console.cloud.google.com/apis/credentials/oauthclient/).
 
 # Enviroments
 Databases
