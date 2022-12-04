@@ -21,6 +21,30 @@ npx prisma migrate dev
 npm run dev
 ```
 
+# Enviroments
+Databases
+- `production`
+- `staging`
+- `dev`
+- `shadow`
+
+Branches
+- `main`
+- `dev`
+- `feature/x`
+
+Vercel Deployments / Env Vars:
+- `production` (branch: main)
+- `preview` (branch: dev->main) (db: staging) - select `dev` in Vercel env vars.
+- `preview` (branch: ! main || dev) (db: dev)
+
+Local Deployments / Env Vars:
+- `dev` (db: dev)
+- `npx prisma migrate` (db: dev + shadow)
+
+
+The "development" environment in Vercel is only meant for [storing env vars that you can download, they are not used in deployment.](https://vercel.com/docs/concepts/projects/environment-variables#development-environment-variables)
+
 # Create T3 App
 
 This is an app bootstrapped according to the [init.tips](https://init.tips) stack, also known as the T3-Stack.
