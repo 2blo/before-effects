@@ -1,3 +1,26 @@
+# Usage
+
+Clean:
+```bash
+rm -rf node_modules
+npm ci
+```
+```bash
+npm install
+npm build .
+```
+Prototype with
+```bash
+npx prisma db push
+```
+Commit:
+```bash
+npx prisma migrate dev
+```
+```bash
+npm run dev
+```
+
 # Create T3 App
 
 This is an app bootstrapped according to the [init.tips](https://init.tips) stack, also known as the T3-Stack.
