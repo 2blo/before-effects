@@ -1,7 +1,7 @@
 # Routes
 - `home` - SSG (+ CSR for user name / "your videos"?)
 - `auth` - ?
-- `user` - SSG + CSR
+- `user` - SSG + CSR (static route user/you or non static route + user/index.tsx)
 - `video` - SSG + CSR
 - `upload` - SSG
 
