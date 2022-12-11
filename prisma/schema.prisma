@@ -55,6 +55,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  Post          Post[]
 }
 
 model VerificationToken {
@@ -63,4 +64,20 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Post {
+  id          String  @id @default(cuid())
+  type        Content
+  title       String
+  description String
+  before      String
+  after       String
+  userId      String
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Content {
+  VIDEO
+  IMAGE
 }

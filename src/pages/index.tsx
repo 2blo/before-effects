@@ -4,10 +4,11 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
+import { Button } from "@ui/Button";
 
 const Home: NextPage = () => {
   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
-
+  const all = trpc.example.getAll.useQuery();
   return (
     <>
       <Head>
@@ -46,6 +47,13 @@ const Home: NextPage = () => {
             <p className="text-2xl text-white">
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
             </p>
+            <Button
+              intent="primary"
+              size="medium"
+              className="bg-red-700 text-green-400"
+            >
+              hi
+            </Button>
             <AuthShowcase />
           </div>
         </div>
@@ -61,15 +69,21 @@ const AuthShowcase: React.FC = () => {
 
   const { data: secretMessage } = trpc.auth.getSecretMessage.useQuery(
     undefined, // no input
-    { enabled: sessionData?.user !== undefined },
+    { enabled: sessionData?.user !== undefined }
   );
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl text-white">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
+        {sessionData && sessionData.user && (
+          <Link href={`user/${sessionData.user?.id}`}>
+            {" "}
+            Logged in as {sessionData.user?.name}{" "}
+          </Link>
+        )}
         {secretMessage && <span> - {secretMessage}</span>}
       </p>
+
       <button
         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
         onClick={sessionData ? () => signOut() : () => signIn()}
