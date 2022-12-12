@@ -25,6 +25,13 @@ npx prisma migrate dev
 ```bash
 npm run dev
 ```
+
+## Inspect db
+```bash
+python .scripts/inspect-db.py <TableName>
+```
+Use the `Excel Viewer` extension to view.
+
 ## Vercel
 Add [build command](https://vercel.com/2blo/before-effects/settings) from [custom npm script](https://github.com/2blo/before-effects/blob/3-document-usage/package.json) according to [Prisma docs](https://www.prisma.io/docs/guides/deployment/deployment-guides/deploying-to-vercel#1-create-and-deploy-the-project-with-the-vercel-deploy-button):
 ```bash
