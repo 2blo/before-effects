@@ -48,13 +48,13 @@ Databases
 
 Branches
 - `main`
-- `dev`
+- ~`dev`~
 - `feature/x`
 
 Vercel Deployments / Env Vars:
 - `production` (branch: main)
-- `preview` (branch: dev->main) (db: staging) - select `dev` in Vercel env vars.
-- `preview` (branch: ! main || dev) (db: dev)
+- `preview` (branch: ~dev~ feature->main) (db: staging) - select ~`dev`~ (cant do this now, differemt branch each PR) in Vercel env vars.
+- ~`preview` (branch: ! main || dev) (db: dev)~
 
 Local Deployments / Env Vars:
 - `dev` (db: dev)
