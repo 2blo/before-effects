@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --divide: 50%;
+}
+
+@layer utilites {
+  .clip-screen {
+    clip-path: polygon(0 0, var(--divide) 0, var(--divide) 100%, 0 100%);
+  }
+}
