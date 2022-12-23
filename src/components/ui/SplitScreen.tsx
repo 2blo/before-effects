@@ -1,5 +1,6 @@
 // components/button.ts
 import { VariantProps, cva } from "class-variance-authority";
+import Image from "next/image";
 import { MouseEvent, useState } from "react";
 import { z } from "zod";
 
@@ -24,7 +25,13 @@ const splitscreen = cva("splitscreen", {
       medium: ["text-base", "py-2", "px-4"],
     },
     fit: {
-      max: ["bg-red-700", "h-48", "relative", "w-screen", "mx-10"],
+      max: [
+        "bg-red-700",
+        "relative",
+        "w-screen",
+        "mx-48",
+        // "h-[calc(ratio*17.2rem)]",
+      ],
     },
   },
   compoundVariants: [
@@ -57,13 +64,28 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
     );
   };
 
+  const [ratio, setRatio] = useState(16 / 9); // default to 16:9
+
   return (
     <div
       onMouseMove={onmousemove}
       className={splitscreen({ intent, size, className })}
       {...props}
+      style={{ height: `${ratio * 380}px` }}
     >
-      <div className="absolute left-0 right-0 top-0 bottom-0 bg-red-300"></div>
+      <Image
+        className="absolute left-0 right-0 top-0 bottom-0 bg-red-300"
+        src="https://i.redd.it/0e35fxn4dam91.png"
+        alt="no img"
+        // width={1000}
+        // height={1000 / ratio}
+        fill
+        style={{ objectFit: "contain" }}
+        onLoadingComplete={({ naturalWidth, naturalHeight }) => {
+          setRatio(naturalWidth / naturalHeight);
+          console.log(ratio);
+        }}
+      ></Image>
 
       <div
         style={{ "--divide": `${divide}%` } as React.CSSProperties}
