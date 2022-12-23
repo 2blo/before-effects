@@ -28,9 +28,6 @@ const splitscreen = cva("splitscreen", {
       max: [
         "bg-red-700",
         "relative",
-        "w-screen",
-        "mx-48",
-        // "h-[calc(ratio*17.2rem)]",
       ],
     },
   },
@@ -64,27 +61,33 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
     );
   };
 
-  const [ratio, setRatio] = useState(16 / 9); // default to 16:9
+  const maxWidth = 70;
+  const maxHeight = 80;
+  const [aspectStyle, setAspectStyle] = useState({ height: `${maxHeight}vh`, width: `${maxWidth}vw` })
+  const onLoadingComplete = ( naturalWidth: number, naturalHeight: number) => {
+    const naturalRatio = naturalWidth / naturalHeight
+    const maxRatio = (maxWidth * screen.width) / (maxHeight * screen.height)
+    if (naturalRatio > maxRatio) {
+      setAspectStyle({ height: `${maxWidth/naturalRatio}vw`, width: `${maxWidth}vw` })
+    } else {
+      setAspectStyle({ height: `${maxHeight}vh`, width: `${maxHeight*naturalRatio}vh` })
+    }
+  }
 
   return (
     <div
       onMouseMove={onmousemove}
       className={splitscreen({ intent, size, className })}
       {...props}
-      style={{ height: `${ratio * 380}px` }}
+      style={aspectStyle}
     >
       <Image
         className="absolute left-0 right-0 top-0 bottom-0 bg-red-300"
         src="https://i.redd.it/0e35fxn4dam91.png"
         alt="no img"
-        // width={1000}
-        // height={1000 / ratio}
         fill
         style={{ objectFit: "contain" }}
-        onLoadingComplete={({ naturalWidth, naturalHeight }) => {
-          setRatio(naturalWidth / naturalHeight);
-          console.log(ratio);
-        }}
+        onLoadingComplete={({naturalWidth, naturalHeight}) => onLoadingComplete(naturalWidth, naturalHeight)}
       ></Image>
 
       <div
