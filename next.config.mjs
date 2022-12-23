@@ -17,7 +17,7 @@ const config = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "i.redd.it",
+        hostname: "preview.redd.it",
         port: "",
         pathname: "/**",
       },
