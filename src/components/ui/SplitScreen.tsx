@@ -5,6 +5,8 @@ import { type MouseEvent, useState } from "react";
 import { z } from "zod";
 import { Content } from "@prisma/client";
 import YouTube from "react-youtube";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const divideSchema = z.number().min(0).max(100);
 type Divide = z.infer<typeof divideSchema>;
@@ -12,7 +14,7 @@ type Divide = z.infer<typeof divideSchema>;
 const splitscreen = cva("splitscreen", {
   variants: {
     base: {
-      base: ["relative", "bg-pink-500"],
+      base: ["relative"],
     },
   },
   defaultVariants: {
@@ -52,15 +54,15 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
       ((e.clientX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth) *
         100
     );
-    console.log("--------------------------");
   };
 
-  const maxWidth = 90;
+  const maxWidth = 80;
   const maxHeight = 90;
   const [aspectStyle, setAspectStyle] = useState({
     height: `${maxHeight}vh`,
     width: `${maxWidth}vw`,
   });
+
   const onLoadingComplete = (naturalWidth: number, naturalHeight: number) => {
     const naturalRatio = naturalWidth / naturalHeight;
     const maxRatio = (maxWidth * screen.width) / (maxHeight * screen.height);
@@ -76,6 +78,19 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
       });
     }
   };
+
+  const videoId = "gFcDolkdB9A";
+  const { isLoading, error, data, isFetching } = useQuery({
+    // queryKey: ["repoData"],
+    queryFn: () =>
+      axios
+        .get(
+          `https://noembed.com/embed?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${videoId}`
+        )
+        .then((res) => res.data),
+  });
+
+  if (isLoading) return "Loading noembed...";
 
   const content: Content = "IMAGE";
   return (
@@ -129,6 +144,9 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
                 "pointer-events": "none",
               } as React.CSSProperties
             }
+            onReady={(e) => {
+              onLoadingComplete(data["width"], data["height"]);
+            }}
           ></YouTube>
         </>
       )}
