@@ -4,6 +4,7 @@ import Image from "next/image";
 import { type MouseEvent, useState } from "react";
 import { z } from "zod";
 import { Content } from "@prisma/client";
+import YouTube from "react-youtube";
 
 const divideSchema = z.number().min(0).max(100);
 type Divide = z.infer<typeof divideSchema>;
@@ -11,7 +12,7 @@ type Divide = z.infer<typeof divideSchema>;
 const splitscreen = cva("splitscreen", {
   variants: {
     base: {
-      base: ["relative"],
+      base: ["relative", "bg-pink-500"],
     },
   },
   defaultVariants: {
@@ -51,13 +52,14 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
       ((e.clientX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth) *
         100
     );
+    console.log("--------------------------");
   };
 
-  const maxWidth = 70;
-  const maxHeight = 80;
+  const maxWidth = 90;
+  const maxHeight = 90;
   const [aspectStyle, setAspectStyle] = useState({
-    height: `${0}vh`,
-    width: `${0}vw`,
+    height: `${maxHeight}vh`,
+    width: `${maxWidth}vw`,
   });
   const onLoadingComplete = (naturalWidth: number, naturalHeight: number) => {
     const naturalRatio = naturalWidth / naturalHeight;
@@ -108,26 +110,26 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
         </>
       ) : (
         <>
-          <Image
-            className={half({ className })}
-            src="https://preview.redd.it/h93al5c4kp7a1.png?width=8000&format=png&auto=webp&s=c35051f26e05d7a9d5a7cdf760f6cd1cb005035e"
-            alt="image loading"
-            fill
-            onLoadingComplete={({ naturalWidth, naturalHeight }) =>
-              onLoadingComplete(naturalWidth, naturalHeight)
-            }
-          ></Image>
-          <Image
-            className={half({ className }) + " clip-screen"}
-            src="https://preview.redd.it/fcwt76c4kp7a1.png?width=8000&format=png&auto=webp&s=fa00ec8bcb0979c26c078f6f9764c7a35a9db33a"
-            alt="image loading"
-            fill
+          <YouTube
+            className={half({ className }) + " youtubeContainer"}
+            videoId="a7kTqy96Bz8"
             style={
               {
                 "--divide": `${divide}%`,
+                "pointer-events": "none",
               } as React.CSSProperties
             }
-          ></Image>
+          ></YouTube>
+          <YouTube
+            className={half({ className }) + " youtubeContainer clip-screen"}
+            videoId="gFcDolkdB9A"
+            style={
+              {
+                "--divide": `${divide}%`,
+                "pointer-events": "none",
+              } as React.CSSProperties
+            }
+          ></YouTube>
         </>
       )}
     </div>

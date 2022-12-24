@@ -8,6 +8,17 @@
 
 @layer utilites {
   .clip-screen {
-    clip-path: polygon(0 0, var(--divide) 0, var(--divide) 100%, 0 100%);
+    clip-path: polygon(0 0, var(--divide) 0, var(--divide) 200%, 0 200%);
   }
+}
+
+.youtubeContainer {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.youtubeContainer iframe {
+  width: 100%;
+  height: 100%;
 }
