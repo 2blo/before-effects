@@ -18,7 +18,6 @@ const config = {
       {
         protocol: "https",
         hostname: "preview.redd.it",
-        port: "",
         pathname: "/**",
       },
     ],
