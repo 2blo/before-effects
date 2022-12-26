@@ -3,7 +3,7 @@ import { type VariantProps, cva } from "class-variance-authority";
 import Image from "next/image";
 import React, { type MouseEvent, useState, useRef } from "react";
 import { z } from "zod";
-import { Content } from "@prisma/client";
+import { Content, Post } from "@prisma/client";
 import YouTube, { YouTubePlayer } from "react-youtube";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -42,7 +42,10 @@ export interface SplitscreenProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof splitscreen> {
   contenttype: Content;
+  before: Post["before"];
+  after: Post["after"];
 }
+
 const divideSchema = z.number().min(0).max(100);
 type Divide = z.infer<typeof divideSchema>;
 
@@ -94,20 +97,18 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
     }
   };
 
-  const videoId = "gFcDolkdB9A";
+  const v1 = useRef<YouTubePlayer>();
+  const v2 = useRef<YouTubePlayer>();
+
   const { isLoading, error, data, isFetching } = useQuery({
     queryKey: ["repoData"],
     queryFn: () =>
       axios
         .get(
-          `https://noembed.com/embed?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${videoId}`
+          `https://noembed.com/embed?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${props.after}`
         )
         .then((res) => res.data),
   });
-
-  const v1 = useRef<YouTubePlayer>();
-  const v2 = useRef<YouTubePlayer>();
-
   if (isLoading) return <div></div>;
 
   return (
@@ -121,7 +122,7 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
           <>
             <Image
               className={half({ className })}
-              src="https://preview.redd.it/fcwt76c4kp7a1.png?width=8000&format=png&auto=webp&s=fa00ec8bcb0979c26c078f6f9764c7a35a9db33a"
+              src={props.after}
               alt="image loading"
               fill
               onLoadingComplete={({ naturalWidth, naturalHeight }) =>
@@ -130,7 +131,7 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
             ></Image>
             <Image
               className={half({ className }) + " clip-screen"}
-              src="https://preview.redd.it/h93al5c4kp7a1.png?width=8000&format=png&auto=webp&s=c35051f26e05d7a9d5a7cdf760f6cd1cb005035e"
+              src={props.before}
               alt="image loading"
               fill
               style={
@@ -144,7 +145,7 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
           <>
             <YouTube
               className={half({ className }) + " youtubeContainer"}
-              videoId="a7kTqy96Bz8"
+              videoId={props.after}
               style={
                 {
                   "--divide": `${divide}%`,
@@ -156,7 +157,7 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
             ></YouTube>
             <YouTube
               className={half({ className }) + " youtubeContainer clip-screen"}
-              videoId="gFcDolkdB9A"
+              videoId={props.before}
               style={
                 {
                   "--divide": `${divide}%`,

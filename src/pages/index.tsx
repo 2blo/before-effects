@@ -18,7 +18,16 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="flex min-h-screen justify-center ">
-        <Splitscreen contenttype="VIDEO" />
+        <Splitscreen
+          contenttype="VIDEO"
+          after="a7kTqy96Bz8"
+          before="gFcDolkdB9A"
+        />
+        {/* <Splitscreen
+          contenttype="IMAGE"
+          after="https://preview.redd.it/fcwt76c4kp7a1.png?width=8000&format=png&auto=webp&s=fa00ec8bcb0979c26c078f6f9764c7a35a9db33a"
+          before="https://preview.redd.it/h93al5c4kp7a1.png?width=8000&format=png&auto=webp&s=c35051f26e05d7a9d5a7cdf760f6cd1cb005035e"
+        /> */}
       </div>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
