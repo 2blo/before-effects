@@ -5,9 +5,8 @@ import React, { type MouseEvent, useState, useRef } from "react";
 import { z } from "zod";
 import { Content, Post } from "@prisma/client";
 import YouTube, { YouTubePlayer } from "react-youtube";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { Button } from "./Button";
+import { atom, useAtom } from "jotai";
 
 const splitscreen = cva("splitscreen", {
   variants: {
@@ -53,7 +52,9 @@ const aspectStyleSchema = z.object({
   height: z.string(),
   width: z.string(),
 });
-type aspectStyle = z.infer<typeof aspectStyleSchema>;
+type AspectStyle = z.infer<typeof aspectStyleSchema>;
+
+export const aspectAtom = atom<AspectStyle>({ height: "none", width: "none" });
 
 export const Splitscreen: React.FC<SplitscreenProps> = ({
   className,
@@ -71,7 +72,7 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
   const maxWidth = 80;
   const maxHeight = 90;
 
-  const [aspectStyle, setAspectStyle] = useState<aspectStyle>({
+  const [aspectStyle, setAspectStyle] = useState<AspectStyle>({
     height: `${maxHeight}vh`,
     width: `${maxWidth}vw`,
   });
@@ -97,19 +98,11 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
     }
   };
 
-  const v1 = useRef<YouTubePlayer>();
-  const v2 = useRef<YouTubePlayer>();
+  const afterPlayer = useRef<YouTubePlayer>();
+  const beforePlayer = useRef<YouTubePlayer>();
+  const beforeAudioActive = useRef<boolean>(true);
 
-  const { isLoading, error, data, isFetching } = useQuery({
-    queryKey: ["repoData"],
-    queryFn: () =>
-      axios
-        .get(
-          `https://noembed.com/embed?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${props.after}`
-        )
-        .then((res) => res.data),
-  });
-  if (isLoading) return <div></div>;
+  const [, setAspect] = useAtom(aspectAtom);
 
   return (
     <div>
@@ -125,9 +118,9 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
               src={props.after}
               alt="image loading"
               fill
-              onLoadingComplete={({ naturalWidth, naturalHeight }) =>
-                onLoadingComplete(naturalWidth, naturalHeight)
-              }
+              onLoadingComplete={({ naturalWidth, naturalHeight }) => {
+                onLoadingComplete(naturalWidth, naturalHeight);
+              }}
             ></Image>
             <Image
               className={half({ className }) + " clip-screen"}
@@ -152,7 +145,10 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
                 } as React.CSSProperties
               }
               onReady={(e) => {
-                v1.current = e.target;
+                afterPlayer.current = e.target;
+                if (beforeAudioActive.current) {
+                  e.target.mute();
+                } else e.target.unMute();
               }}
             ></YouTube>
             <YouTube
@@ -164,8 +160,12 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
                 } as React.CSSProperties
               }
               onReady={(e) => {
-                onLoadingComplete(data["width"], data["height"]);
-                v2.current = e.target;
+                onLoadingComplete(16, 9);
+                setAspect(aspectStyle);
+                beforePlayer.current = e.target;
+                if (beforeAudioActive.current) {
+                  e.target.unMute();
+                } else e.target.mute();
               }}
             ></YouTube>
             <Button
@@ -173,13 +173,30 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
                 "center absolute left-2/4 top-2/4 z-10 -translate-x-1/2 -translate-y-1/2 object-contain"
               }
               onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                (v1.current as YouTubePlayer)?.playVideo();
-                (v2.current as YouTubePlayer)?.playVideo();
+                (afterPlayer.current as YouTubePlayer)?.playVideo();
+                (beforePlayer.current as YouTubePlayer)?.playVideo();
                 (e.target as HTMLButtonElement).hidden = true;
               }}
               onMouseMove={(e) => onmousemove(e)}
             >
               Play
+            </Button>
+            <Button
+              className={
+                "center absolute left-2/4 bottom-0 z-10 -translate-x-1/2 object-contain"
+              }
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                beforeAudioActive.current = !beforeAudioActive.current;
+                if (beforeAudioActive.current) {
+                  beforePlayer.current.unMute();
+                  afterPlayer.current.mute();
+                } else {
+                  beforePlayer.current.mute();
+                  afterPlayer.current.unMute();
+                }
+              }}
+            >
+              Switch Audio Track
             </Button>
           </>
         )}
