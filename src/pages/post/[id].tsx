@@ -21,14 +21,6 @@ const lorem = new LoremIpsum({
 });
 
 const Video: NextPage = () => {
-  const router = useRouter();
-  const id = router.query.id;
-  //   let userQuery = undefined;
-  //   if (Array.isArray(id)) {
-  //     throw "Found array of ids instead of a single id";
-  //   } else if (id) {
-  //     userQuery = trpc.user.getById.useQuery(id);
-  //   }
   const [aspect] = useAtom(aspectAtom);
   return (
     <div className="flex-col -space-y-16">

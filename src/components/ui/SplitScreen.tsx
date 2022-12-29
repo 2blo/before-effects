@@ -4,9 +4,16 @@ import Image from "next/image";
 import React, { type MouseEvent, useState, useRef } from "react";
 import { z } from "zod";
 import { Content, Post } from "@prisma/client";
-import YouTube, { YouTubePlayer } from "react-youtube";
+import YouTube, { YouTubePlayer, YouTubeEvent } from "react-youtube";
 import { Button } from "./Button";
 import { atom, useAtom } from "jotai";
+
+const UNSTARTED = -1;
+const ENDED = 0;
+const PLAYING = 1;
+const PAUSED = 2;
+const BUFFERING = 3;
+const CUED = 5;
 
 const splitscreen = cva("splitscreen", {
   variants: {
@@ -72,6 +79,8 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
   const maxWidth = 80;
   const maxHeight = 90;
 
+  const beforeReadied = useRef<boolean>(false);
+  const afterReadied = useRef<boolean>(false);
   const [aspectStyle, setAspectStyle] = useState<AspectStyle>({
     height: `${maxHeight}vh`,
     width: `${maxWidth}vw`,
@@ -98,12 +107,79 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
     }
   };
 
-  const afterPlayer = useRef<YouTubePlayer>();
   const beforePlayer = useRef<YouTubePlayer>();
+  const afterPlayer = useRef<YouTubePlayer>();
   const beforeAudioActive = useRef<boolean>(true);
 
   const [, setAspect] = useAtom(aspectAtom);
 
+  // --------------------------------------------------------------------------
+  const preloadingBefore = useRef<boolean>(false);
+  const preloadingAfter = useRef<boolean>(false);
+  const readyBefore = useRef<boolean>(false);
+  const readyAfter = useRef<boolean>(false);
+  const doneAfter = useRef<boolean>(false);
+  const loadPauseBefore = useRef<boolean>(true);
+
+  const onBeforePlayerStateChange = (event: YouTubeEvent) => {
+    if (event.data === PLAYING) {
+      if (preloadingBefore.current) {
+        beforePlayer.current.pauseVideo();
+        beforePlayer.current.seekTo(0);
+        preloadingBefore.current = false;
+        readyAfter.current = true;
+        preloadingAfter.current = true;
+        afterPlayer.current.seekTo(1.1);
+      } else afterPlayer.current.playVideo();
+    } else if (event.data === PAUSED) {
+      if (!preloadingBefore.current) afterPlayer.current.pauseVideo();
+    } else if (event.data === BUFFERING) {
+      if (!preloadingBefore.current) {
+        afterPlayer.current.pauseVideo();
+      }
+    } else if (event.data === CUED) {
+      if (!preloadingBefore.current) afterPlayer.current.pauseVideo();
+    } else if (event.data === ENDED) {
+      afterPlayer.current.stopVideo();
+    }
+  };
+
+  const onAfterPlayerStateChange = (event: YouTubeEvent) => {
+    if (event.data === PLAYING) {
+      if (preloadingAfter.current) {
+        afterPlayer.current.pauseVideo();
+        afterPlayer.current.seekTo(0);
+        preloadingAfter.current = false;
+        // afterPlayer.current.playVideo(); // "improves sync but double click needed"
+      } else {
+        beforePlayer.current.playVideo();
+      }
+    } else if (event.data === PAUSED) {
+      if (!preloadingAfter.current) {
+        beforePlayer.current.pauseVideo();
+        if (loadPauseBefore.current) {
+          beforePlayer.current.playVideo();
+          loadPauseBefore.current = false;
+        }
+      }
+    } else if (event.data === BUFFERING) {
+      if (!preloadingAfter.current) {
+        beforePlayer.current.pauseVideo();
+      } else {
+        doneAfter.current = true;
+      }
+    } else if (event.data === CUED) {
+      if (!preloadingAfter.current) beforePlayer.current.pauseVideo();
+    } else if (event.data === ENDED) {
+      beforePlayer.current.stopVideo();
+    } else if (event.data === UNSTARTED) {
+      if (doneAfter.current) {
+        doneAfter.current = false;
+        afterPlayer.current.playVideo();
+      }
+    }
+  };
+  // --------------------------------------------------------------------------
   return (
     <div>
       <div
@@ -139,17 +215,20 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
             <YouTube
               className={half({ className }) + " youtubeContainer"}
               videoId={props.after}
-              style={
-                {
-                  "--divide": `${divide}%`,
-                } as React.CSSProperties
-              }
+              style={{} as React.CSSProperties}
+              opts={{
+                playerVars: {
+                  showinfo: 1,
+                  modestbranding: true,
+                  controls: 1,
+                  loop: 1,
+                  mute: 1,
+                },
+              }}
               onReady={(e) => {
                 afterPlayer.current = e.target;
-                if (beforeAudioActive.current) {
-                  e.target.mute();
-                } else e.target.unMute();
               }}
+              onStateChange={onAfterPlayerStateChange}
             ></YouTube>
             <YouTube
               className={half({ className }) + " youtubeContainer clip-screen"}
@@ -159,23 +238,32 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
                   "--divide": `${divide}%`,
                 } as React.CSSProperties
               }
+              opts={{
+                playerVars: {
+                  showinfo: 1,
+                  modestbranding: true,
+                  controls: 1,
+                  loop: 1,
+                  mute: 0,
+                },
+              }}
               onReady={(e) => {
                 onLoadingComplete(16, 9);
                 setAspect(aspectStyle);
                 beforePlayer.current = e.target;
-                if (beforeAudioActive.current) {
-                  e.target.unMute();
-                } else e.target.mute();
               }}
+              onStateChange={onBeforePlayerStateChange}
             ></YouTube>
             <Button
               className={
                 "center absolute left-2/4 top-2/4 z-10 -translate-x-1/2 -translate-y-1/2 object-contain"
               }
               onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                (afterPlayer.current as YouTubePlayer)?.playVideo();
-                (beforePlayer.current as YouTubePlayer)?.playVideo();
                 (e.target as HTMLButtonElement).hidden = true;
+                readyBefore.current = true;
+                preloadingBefore.current = true;
+                beforePlayer.current.seekTo(1);
+                readyAfter.current = true;
               }}
               onMouseMove={(e) => onmousemove(e)}
             >
