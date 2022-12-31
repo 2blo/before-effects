@@ -13,5 +13,15 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "preview.redd.it",
+        pathname: "/**",
+      },
+    ],
+  },
 };
+
 export default config;
