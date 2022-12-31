@@ -1,3 +1,92 @@
+# Usage
+
+## Local Dev
+
+Clean:
+
+```bash
+rm -rf node_modules
+npm ci
+```
+
+```bash
+npm install
+npm run build
+```
+
+Update client schema:
+
+```bash
+npx prisma generate
+```
+
+Prototype with
+
+```bash
+npx prisma db push
+```
+
+Commit / create initial tables:
+
+```bash
+npx prisma migrate dev
+```
+
+```bash
+npm run dev
+```
+
+## Inspect db
+
+Print a table, with 1 optional `WHERE` selection:
+
+```bash
+python .scripts/inspect-db.py <TableName> <column=value>
+```
+
+Use the `Excel Viewer` extension to view.
+
+## Vercel
+
+Add [build command](https://vercel.com/2blo/before-effects/settings) from [custom npm script](https://github.com/2blo/before-effects/blob/3-document-usage/package.json) according to [Prisma docs](https://www.prisma.io/docs/guides/deployment/deployment-guides/deploying-to-vercel#1-create-and-deploy-the-project-with-the-vercel-deploy-button):
+
+```bash
+npm run vercel-build
+```
+
+Warning: Preview deployments have "random" URLs that wont be listed in [Google Cloud credentials](https://console.cloud.google.com/apis/credentials/oauthclient/).
+
+# Enviroments
+
+## Databases
+
+- `production`
+- `dev`
+- `shadow`
+
+## Branches
+
+- `main`
+- `feature/x`
+
+## Vercel Deployments / Env Vars:
+
+- `production` (branch: main)
+- `preview` (branch: feature->main)
+- `dev` - just used for [storing env vars that you can download, they are not used in deployment.](https://vercel.com/docs/concepts/projects/environment-variables#development-environment-variables)
+
+## Local Deployments / Env Vars:
+
+- `dev` (db: dev)
+- `npx prisma migrate` (db: dev + shadow)
+
+## Auth:
+
+- `Google` for Main `before-effects.vercel.app` and local dev `localhost:3000`.
+- `Email` for preview.
+
+Each feature branch will get a new url, you have to set it manually in Google console, and update the Vercel settings.
+
 # Create T3 App
 
 This is an app bootstrapped according to the [init.tips](https://init.tips) stack, also known as the T3-Stack.
