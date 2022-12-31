@@ -67,14 +67,15 @@ model VerificationToken {
 }
 
 model Post {
-  id          String  @id @default(cuid())
+  id          String   @id @default(cuid())
   type        Content
   title       String
   description String
   before      String
   after       String
+  createdAt   DateTime @default(now())
   userId      String
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum Content {

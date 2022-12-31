@@ -1,19 +1,27 @@
 import { publicProcedure } from "../trpc";
-import { Database } from "../../../../lib/database.types";
 import { z } from "zod";
-// import { Content } from ".prisma/client";
-import { Content } from "@prisma/client";
-
+import { Content, Prisma } from "@prisma/client";
 import { router, protectedProcedure } from "../trpc";
+import { TRPCError } from "@trpc/server";
 
-export const contentRouter = router({
+const defaultPostSelect = Prisma.validator<Prisma.PostSelect>()({
+  id: true,
+  title: true,
+  description: true,
+  type: true,
+  before: true,
+  after: true,
+  userId: true,
+});
+
+export const postRouter = router({
   uploadUrl: protectedProcedure
     .input(
       z.object({
         title: z.string(),
         description: z.string(),
-        before: z.string().url(),
-        after: z.string().url(),
+        before: z.string(),
+        after: z.string(),
         type: z.enum([Content.IMAGE, Content.VIDEO]),
       })
     )
@@ -29,20 +37,24 @@ export const contentRouter = router({
         },
       });
     }),
-  getById: publicProcedure
+  byId: publicProcedure
     .input(
       z.object({
-        postId: z.string().cuid(),
+        id: z.string(),
       })
     )
-    .query(({ ctx, input }) => {
-      return ctx.prisma.post.findFirst({
-        where: {
-          id: input.postId,
-        },
+    .query(async ({ ctx, input }) => {
+      const { id } = input;
+      const post = await ctx.prisma.post.findUnique({
+        where: { id },
+        select: defaultPostSelect,
       });
+      if (!post) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No post with id '${id}'`,
+        });
+      }
+      return post;
     }),
-  first: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.post.findFirst();
-  }),
 });
