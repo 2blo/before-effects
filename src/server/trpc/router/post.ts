@@ -37,6 +37,7 @@ export const postRouter = router({
         },
       });
     }),
+
   byId: publicProcedure
     .input(
       z.object({
@@ -53,6 +54,23 @@ export const postRouter = router({
         throw new TRPCError({
           code: "NOT_FOUND",
           message: `No post with id '${id}'`,
+        });
+      }
+      return post;
+    }),
+
+  listByUser: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { userId } = input;
+      const post = await ctx.prisma.post.findMany({
+        where: { userId },
+        select: defaultPostSelect,
+      });
+      if (!post) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No post with id '${userId}'`,
         });
       }
       return post;
