@@ -1,39 +1,34 @@
-<h1>Before Effects</h1>
-
 # Usage
 
 ## Local Dev
 
-Clean:
-
+Clean install:
 ```bash
-rm -rf node_modules
 npm ci
 ```
 
+Install:
 ```bash
 npm install
 npm run build
 ```
 
 Update client schema:
-
 ```bash
 npx prisma generate
 ```
 
-Prototype with
-
+Prototype new db schema:
 ```bash
 npx prisma db push
 ```
 
 Commit / create initial tables:
-
 ```bash
 npx prisma migrate dev
 ```
 
+Run locally:
 ```bash
 npm run dev
 ```
@@ -75,7 +70,10 @@ Warning: Preview deployments have "random" URLs that wont be listed in [Google C
 
 - `production` (branch: main)
 - `preview` (branch: feature->main)
-- `dev` - just used for [storing env vars that you can download, they are not used in deployment.](https://vercel.com/docs/concepts/projects/environment-variables#development-environment-variables)
+- `dev` - [store dev env vars](https://vercel.com/docs/concepts/projects/environment-variables#development-environment-variables), download with:
+```bash
+npx vercel env pull
+```
 
 ## Local Deployments / Env Vars:
 
