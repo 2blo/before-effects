@@ -20,43 +20,75 @@ function useYoutubeThumbnail(after: Post["after"]) {
     queryKey: ["thumbnails", after],
     queryFn: async () => {
       const { data } = await axios.get(
-        "https://jsonplaceholder.typicode.com/posts"
+        `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${after}&key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`
       );
       return data;
     },
   });
 }
 
-export interface ThumbnailProps
-  extends React.HTMLAttributes<HTMLDivElement>
-     {
+export interface ThumbnailProps extends React.HTMLAttributes<HTMLDivElement> {
   contenttype: Content;
-  title: Post.["title"];
-  createdat: Post["createdAt"];
+  title: Post["title"];
+  createdat: string;
+  // createdat: Post["createdAt"];
   after: Post["after"];
 }
 
-const Thumbnail: React.FC<ThumbnailProps> = ({
+export interface YoutubeThumbnailProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  after: Post["after"];
+}
+
+const YoutubeThumbnail: React.FC<YoutubeThumbnailProps> = ({
   className,
   ...props
 }) => {
-  let image: string
-  if (props.contenttype === Content.IMAGE) {
-    image = props.after
-  } else {
-    https://www.googleapis.com/youtube/v3/videos?key=YOUR_API_KEY&part=snippet&id=VIDEO_ID
+  const data = useYoutubeThumbnail(props.after);
+  if (data.status !== "success") {
+    return <>{"loading"}</>;
   }
+  console.log(data.data);
+  data;
   return (
     <QueryClientProvider client={queryClient}>
-
-    <div>
-      <Image className="object-cover h-28 w-[119.111px]" src={props.after} alt="alt" width={400} height={300}></Image>
-      <h3>{props.title}</h3>
-      <h4>{props.createdat}</h4>
-    </div>
+      {" "}
+      {/* <Image
+        className="h-28 w-[119.111px] object-cover"
+        src={data}
+        alt="alt"
+        width={400}
+        height={300}
+      ></Image> */}
+      data.data
     </QueryClientProvider>
-  )
-}
+  );
+};
+
+const Thumbnail: React.FC<ThumbnailProps> = ({ className, ...props }) => {
+  let image: string;
+  if (props.contenttype === Content.IMAGE) {
+    image = props.after;
+  } else {
+  }
+  return (
+    <div>
+      {props.contenttype === Content.IMAGE ? (
+        <Image
+          className="h-28 w-[119.111px] object-cover"
+          src={props.after}
+          alt="alt"
+          width={400}
+          height={300}
+        ></Image>
+      ) : (
+        <YoutubeThumbnail after={props.after}></YoutubeThumbnail>
+      )}
+      <h3>{props.title}</h3>
+      <h4>{props.createdat.toString()}</h4>
+    </div>
+  );
+};
 
 const UserPage: NextPage = () => {
   // const userId = useRouter().query.id as string;
@@ -101,7 +133,18 @@ const UserPage: NextPage = () => {
         <div className="h-32 w-32 bg-red-400"></div>
         <div className="h-32 w-32 bg-red-400"></div>
         <div className="h-32 w-32 bg-red-400"></div>
-        <Thumbnail title={"title lol"} createdat={"2022-21-34"} after={"/lifeform.jpg"} contenttype={Content.IMAGE}></Thumbnail>
+        <Thumbnail
+          title={"title lol"}
+          createdat={"2022-21-34"}
+          after={"/lifeform.jpg"}
+          contenttype={Content.IMAGE}
+        ></Thumbnail>
+        <Thumbnail
+          title={"title lol"}
+          createdat={"2022-21-34"}
+          after={"a7kTqy96Bz8"}
+          contenttype={Content.VIDEO}
+        ></Thumbnail>
       </div>
     </div>
   );
