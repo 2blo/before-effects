@@ -20,6 +20,11 @@ const config = {
         hostname: "preview.redd.it",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+        pathname: "/**",
+      },
     ],
   },
 };
