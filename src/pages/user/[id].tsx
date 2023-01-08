@@ -4,18 +4,19 @@ import { trpc } from "../../utils/trpc";
 import Image from "next/image";
 import { type Post, Content } from "@prisma/client";
 import NextError from "next/error";
+import Link from "next/link";
 
 export interface ThumbnailProps extends React.HTMLAttributes<HTMLDivElement> {
+  id: Post["id"];
   contenttype: Content;
   title: Post["title"];
-  createdat: string;
-  // createdat: Post["createdAt"];
+  createdat: Post["createdAt"];
   after: Post["after"];
 }
 
 const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
   return (
-    <div>
+    <Link href={`/post/${props.id}`} passHref>
       <Image
         // className="h-28 w-[119.111px] object-cover"
         className="h-[90px] w-[160px] object-cover"
@@ -29,8 +30,8 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
         height={200}
       ></Image>
       <h3>{props.title}</h3>
-      <h4>{props.createdat.toString()}</h4>
-    </div>
+      <h4>{props.createdat.toLocaleDateString("en-GB")}</h4>
+    </Link>
   );
 };
 
@@ -56,9 +57,10 @@ const UserPage: NextPage = () => {
         <div className="grid grid-cols-fluid gap-5">
           {postQuery.data.map((item) => (
             <Thumbnail
+              id={item.id}
               contenttype={item.type}
               after={item.after}
-              createdat={"now"}
+              createdat={item.createdAt}
               className="h-16 w-32"
               key={item.id}
               title={item.title}

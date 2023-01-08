@@ -10,6 +10,7 @@ import { Splitscreen } from "@ui/SplitScreen";
 const Home: NextPage = () => {
   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
   const all = trpc.example.getAll.useQuery();
+  const { data: sessionData } = useSession();
   return (
     <>
       <Head>
@@ -39,6 +40,7 @@ const Home: NextPage = () => {
             <p className="text-2xl text-white">
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
             </p>
+            <Link href={`/user/${sessionData?.user?.id}`}> go to profile</Link>
             <Button
               intent="primary"
               size="medium"
