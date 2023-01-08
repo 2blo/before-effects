@@ -11,6 +11,7 @@ const defaultPostSelect = Prisma.validator<Prisma.PostSelect>()({
   type: true,
   before: true,
   after: true,
+  createdAt: true,
   userId: true,
 });
 
