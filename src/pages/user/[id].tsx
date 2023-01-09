@@ -16,7 +16,11 @@ export interface ThumbnailProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
   return (
-    <Link href={`/post/${props.id}`} passHref>
+    <Link
+      href={`/post/${props.id}`}
+      passHref
+      style={{ color: "inherit", textDecoration: "inherit" }}
+    >
       <Image
         // className="h-28 w-[119.111px] object-cover"
         className="h-[90px] w-[160px] object-cover"
@@ -29,8 +33,8 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
         width={200}
         height={200}
       ></Image>
-      <h3>{props.title}</h3>
-      <h4>{props.createdat.toLocaleDateString("en-GB")}</h4>
+      <h5>{props.title}</h5>
+      <h6>{props.createdat.toLocaleDateString("en-GB")}</h6>
     </Link>
   );
 };
@@ -52,7 +56,7 @@ const UserPage: NextPage = () => {
   }
 
   return (
-    <>
+    <div className="mx-auto w-3/4">
       {userQuery.isReady && postQuery.status === "success" ? (
         <div className="grid grid-cols-fluid gap-5">
           {postQuery.data.map((item) => (
@@ -70,7 +74,7 @@ const UserPage: NextPage = () => {
       ) : (
         <div>loadingg</div>
       )}
-    </>
+    </div>
   );
 };
 
