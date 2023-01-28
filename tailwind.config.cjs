@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       gridTemplateColumns: {
-        fluid: "repeat(auto-fit, minmax(10rem, 1fr))",
+        fluid: "repeat(auto-fit, 270px)",
       },
     },
   },

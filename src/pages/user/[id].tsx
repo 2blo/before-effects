@@ -21,21 +21,29 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
       href={`/post/${props.id}`}
       passHref
       style={{ color: "inherit", textDecoration: "inherit" }}
+      className="border-8 border-transparent hover:bg-sky-700"
     >
       <Image
-        // className="h-28 w-[119.111px] object-cover"
-        className="h-[90px] w-[160px] object-cover"
+        className="h-[135px] w-[270px] object-cover"
         src={
           props.contenttype === Content.IMAGE
             ? props.after
             : `https://i.ytimg.com/vi/${props.after}/hqdefault.jpg`
         }
         alt="alt"
-        width={200}
-        height={200}
+        width={2000}
+        height={2000}
       ></Image>
       <h5>{props.title}</h5>
-      <h6>{props.createdat.toLocaleDateString("en-GB")}</h6>
+      <div className="flex justify-between">
+        <h6>{props.createdat.toLocaleDateString("en-GB")}</h6>
+        <Image
+          src={"/more-vertical.svg"}
+          alt="more"
+          width={20}
+          height={20}
+        ></Image>
+      </div>
     </Link>
   );
 };
@@ -70,7 +78,7 @@ const UserPage: NextPage = () => {
         </h1>
       </div>
       {userQuery.isReady && postQuery.status === "success" ? (
-        <div className="grid grid-cols-fluid gap-5">
+        <div className="grid grid-cols-fluid justify-center gap-x-4 gap-y-16">
           {SortByDescendingDate(postQuery.data.slice()).map((item) => (
             <Thumbnail
               id={item.id}
