@@ -5,6 +5,7 @@ import Image from "next/image";
 import { type Post, Content } from "@prisma/client";
 import NextError from "next/error";
 import Link from "next/link";
+import { SortByDescendingDate } from "../../utils/userutils";
 
 export interface ThumbnailProps extends React.HTMLAttributes<HTMLDivElement> {
   id: Post["id"];
@@ -43,7 +44,6 @@ const UserPage: NextPage = () => {
   const userQuery = useRouter();
   const userId = userQuery.query.id as string;
 
-  // const postQuery = trpc.post.listByUser.useQuery({ userId });
   const postQuery = trpc.post.listByUser.useQuery({ userId });
 
   if (postQuery.error) {
@@ -56,10 +56,22 @@ const UserPage: NextPage = () => {
   }
 
   return (
-    <div className="mx-auto w-3/4">
+    <div className="mx-auto w-3/4 flex-col space-y-10">
+      <div className="flex gap-2">
+        <Image
+          className="h-32 w-32 rounded-full object-cover"
+          src="/lifeform.jpg"
+          alt="alt"
+          width={1000}
+          height={1000}
+        />
+        <h1 className="text-4xl" style={{ alignSelf: "flex-end" }}>
+          {"User name"}
+        </h1>
+      </div>
       {userQuery.isReady && postQuery.status === "success" ? (
         <div className="grid grid-cols-fluid gap-5">
-          {postQuery.data.map((item) => (
+          {SortByDescendingDate(postQuery.data.slice()).map((item) => (
             <Thumbnail
               id={item.id}
               contenttype={item.type}
@@ -72,7 +84,7 @@ const UserPage: NextPage = () => {
           ))}
         </div>
       ) : (
-        <div>loadingg</div>
+        <div>loading...</div>
       )}
     </div>
   );
