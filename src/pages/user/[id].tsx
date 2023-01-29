@@ -6,6 +6,12 @@ import { type Post, Content } from "@prisma/client";
 import NextError from "next/error";
 import Link from "next/link";
 import { SortByDescendingDate } from "../../utils/userutils";
+import MenuDropDown from "@ui/Menu";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { Button } from "@ui/Button";
+
+dayjs.extend(relativeTime);
 
 export interface ThumbnailProps extends React.HTMLAttributes<HTMLDivElement> {
   id: Post["id"];
@@ -16,15 +22,15 @@ export interface ThumbnailProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
+  const router = useRouter();
   return (
-    <Link
-      href={`/post/${props.id}`}
-      passHref
+    <div
+      onClick={() => router.push(`/post/${props.id}`)}
       style={{ color: "inherit", textDecoration: "inherit" }}
-      className="border-8 border-transparent hover:bg-sky-700"
+      className="group rounded-xl border-8 border-transparent hover:bg-gray-100"
     >
       <Image
-        className="h-[135px] w-[270px] object-cover"
+        className="h-[135px] w-[270px] rounded-tr-xl rounded-tl-xl rounded-br-xl object-cover"
         src={
           props.contenttype === Content.IMAGE
             ? props.after
@@ -34,17 +40,14 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
         width={2000}
         height={2000}
       ></Image>
-      <h5>{props.title}</h5>
-      <div className="flex justify-between">
-        <h6>{props.createdat.toLocaleDateString("en-GB")}</h6>
-        <Image
-          src={"/more-vertical.svg"}
-          alt="more"
-          width={20}
-          height={20}
-        ></Image>
+      <h5 className="text-lg">{props.title}</h5>
+      <div className="flex items-end justify-between">
+        <h6 className="text-sm">{dayjs(props.createdat).fromNow()}</h6>
+        <div onClick={(e) => e.stopPropagation()}>
+          <MenuDropDown></MenuDropDown>
+        </div>
       </div>
-    </Link>
+    </div>
   );
 };
 
