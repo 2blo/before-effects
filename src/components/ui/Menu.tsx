@@ -1,10 +1,21 @@
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment, type SVGProps } from "react";
+import { forwardRef, Fragment, RefObject, useRef, type SVGProps } from "react";
 import { Bars3Icon } from "@heroicons/react/20/solid";
+import Modal from "./modal";
+import type { ModalRef } from "./modal";
+import { type Post } from "@prisma/client";
 
-export default function MenuDropDown() {
+export interface MenuProps extends React.HTMLAttributes<HTMLDivElement> {
+  id: Post["id"];
+  onDelete: () => void;
+}
+
+const MenuDropDown: React.FC<MenuProps> = ({ ...props }) => {
+  const modal: RefObject<ModalRef> = useRef(null);
+
   return (
     <Menu as="div" className="relative inline-block">
+      <Modal ref={modal}></Modal>
       <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-0 px-1.5 py-1.5 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
         <Bars3Icon
           className=" h-4 w-4 text-violet-200 opacity-0 hover:text-violet-100 group-hover:opacity-100"
@@ -27,7 +38,7 @@ export default function MenuDropDown() {
                 <button
                   className={`${
                     active ? "bg-violet-500 text-white" : "text-gray-900"
-                  } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                  } group flex h-10 w-full items-center rounded-md px-2 py-2 text-sm`}
                 >
                   {active ? (
                     <EditActiveIcon
@@ -51,20 +62,26 @@ export default function MenuDropDown() {
                 <button
                   className={`${
                     active ? "bg-violet-500 text-white" : "text-gray-900"
-                  } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                  } group flex h-10 w-full items-center rounded-md px-2 py-2 text-sm`}
+                  onClick={props.onDelete}
                 >
-                  {active ? (
-                    <DeleteActiveIcon
-                      className="mr-2 h-5 w-5 text-violet-400"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    <DeleteInactiveIcon
-                      className="mr-2 h-5 w-5 text-violet-400"
-                      aria-hidden="true"
-                    />
-                  )}
-                  Delete
+                  <div
+                    className="absolute flex"
+                    style={{ pointerEvents: "none" }}
+                  >
+                    {active ? (
+                      <DeleteActiveIcon
+                        className="mr-2 h-5 w-5 text-violet-400"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <DeleteInactiveIcon
+                        className="mr-2 h-5 w-5 text-violet-400"
+                        aria-hidden="true"
+                      />
+                    )}
+                    Delete
+                  </div>
                 </button>
               )}
             </Menu.Item>
@@ -73,7 +90,7 @@ export default function MenuDropDown() {
       </Transition>
     </Menu>
   );
-}
+};
 function EditInactiveIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -155,3 +172,5 @@ function DeleteActiveIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export default MenuDropDown;

@@ -4,12 +4,12 @@ import { trpc } from "../../utils/trpc";
 import Image from "next/image";
 import { type Post, Content } from "@prisma/client";
 import NextError from "next/error";
-import Link from "next/link";
 import { SortByDescendingDate } from "../../utils/userutils";
 import MenuDropDown from "@ui/Menu";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Button } from "@ui/Button";
+import { useSession } from "next-auth/react";
+import { TRPCClientError } from "@trpc/client";
 
 dayjs.extend(relativeTime);
 
@@ -19,10 +19,44 @@ export interface ThumbnailProps extends React.HTMLAttributes<HTMLDivElement> {
   title: Post["title"];
   createdat: Post["createdAt"];
   after: Post["after"];
+  onDelete: () => void;
 }
 
 const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
   const router = useRouter();
+  const { data: sessionData } = useSession();
+  const utils = trpc.useContext();
+  const deleteMutation = trpc.post.deleteById.useMutation({
+    onSuccess(data) {
+      console.log("you should delte" + data.title);
+      if (sessionData?.user === undefined) {
+        throw new TRPCClientError(
+          "Unexpected unauthorized error, the server should have thrown an error first."
+        );
+      } else {
+        console.log("inval");
+        utils.post.listByUser.invalidate({ userId: sessionData.user.id });
+        props.onDelete();
+      }
+    },
+    // onMutate(data) {
+    //   console.log("onmut");
+    //   if (sessionData?.user === undefined) {
+    //     throw new TRPCClientError(
+    //       "Unexpected unauthorized error, the server should have thrown an error first."
+    //     );
+    //   }
+    //   utils.post.listByUser.setData(
+    //     { userId: sessionData.user.id },
+    //     (old) => []
+    //   );
+    //   utils.post.listByUser.refetch();
+    // },
+    // queryClient.setQueryData(
+    //   ["post.listByUser", { userId: sessionData?.user?.id }],
+    //   data
+    // );
+  });
   return (
     <div
       onClick={() => router.push(`/post/${props.id}`)}
@@ -44,7 +78,12 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
       <div className="flex items-end justify-between">
         <h6 className="text-sm">{dayjs(props.createdat).fromNow()}</h6>
         <div onClick={(e) => e.stopPropagation()}>
-          <MenuDropDown></MenuDropDown>
+          <MenuDropDown
+            id={props.id}
+            onDelete={async () => {
+              deleteMutation.mutate({ id: props.id });
+            }}
+          ></MenuDropDown>
         </div>
       </div>
     </div>
@@ -54,7 +93,6 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
 const UserPage: NextPage = () => {
   const userQuery = useRouter();
   const userId = userQuery.query.id as string;
-
   const postQuery = trpc.post.listByUser.useQuery({ userId });
 
   if (postQuery.error) {
@@ -91,6 +129,7 @@ const UserPage: NextPage = () => {
               className="h-16 w-32"
               key={item.id}
               title={item.title}
+              onDelete={() => postQuery.refetch()}
             ></Thumbnail>
           ))}
         </div>
