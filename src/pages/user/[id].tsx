@@ -61,7 +61,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
     <div
       onClick={() => router.push(`/post/${props.id}`)}
       style={{ color: "inherit", textDecoration: "inherit" }}
-      className="group rounded-xl border-8 border-transparent hover:bg-gray-100"
+      className="group rounded-xl border-8 border-transparent hover:bg-gray-300"
     >
       <Image
         className="h-[135px] w-[270px] rounded-tr-xl rounded-tl-xl rounded-br-xl object-cover"
