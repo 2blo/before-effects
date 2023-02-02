@@ -20,6 +20,7 @@ export interface ThumbnailProps extends React.HTMLAttributes<HTMLDivElement> {
   createdat: Post["createdAt"];
   after: Post["after"];
   onDelete: () => void;
+  userId: Post["userId"];
 }
 
 const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
@@ -39,23 +40,6 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
         props.onDelete();
       }
     },
-    // onMutate(data) {
-    //   console.log("onmut");
-    //   if (sessionData?.user === undefined) {
-    //     throw new TRPCClientError(
-    //       "Unexpected unauthorized error, the server should have thrown an error first."
-    //     );
-    //   }
-    //   utils.post.listByUser.setData(
-    //     { userId: sessionData.user.id },
-    //     (old) => []
-    //   );
-    //   utils.post.listByUser.refetch();
-    // },
-    // queryClient.setQueryData(
-    //   ["post.listByUser", { userId: sessionData?.user?.id }],
-    //   data
-    // );
   });
   return (
     <div
@@ -78,12 +62,16 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
       <div className="flex items-end justify-between">
         <h6 className="text-sm">{dayjs(props.createdat).fromNow()}</h6>
         <div onClick={(e) => e.stopPropagation()}>
-          <MenuDropDown
-            id={props.id}
-            onDelete={async () => {
-              deleteMutation.mutate({ id: props.id });
-            }}
-          ></MenuDropDown>
+          {sessionData?.user?.id === props.userId ? (
+            <MenuDropDown
+              id={props.id}
+              onDelete={async () => {
+                deleteMutation.mutate({ id: props.id });
+              }}
+            ></MenuDropDown>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </div>
@@ -129,6 +117,7 @@ const UserPage: NextPage = () => {
               className="h-16 w-32"
               key={item.id}
               title={item.title}
+              userId={item.userId}
               onDelete={() => postQuery.refetch()}
             ></Thumbnail>
           ))}
