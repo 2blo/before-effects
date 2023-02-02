@@ -24,12 +24,22 @@ const UploadVideo: NextPage = () => {
       type: Content.IMAGE,
     });
   };
+  const onClicki2 = async () => {
+    mutation.mutate({
+      title: "makise",
+      description: "Source: kaisen",
+      before: "https://i.redd.it/6wdlxkn0c9291.png",
+      after: "https://i.redd.it/6wdlxkn0c9291.png",
+      type: Content.IMAGE,
+    });
+  };
 
   return (
     <div>
       <h1>SSG</h1>
       <h1 onClick={onClick}>Upload terminal</h1>
       <h1 onClick={onClicki}>Upload tuyu</h1>
+      <h1 onClick={onClicki2}>Upload makise</h1>
     </div>
   );
 };

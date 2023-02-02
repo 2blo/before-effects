@@ -76,9 +76,12 @@ model Post {
   createdAt   DateTime @default(now())
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([id, userId])
 }
 
 enum Content {
   VIDEO
   IMAGE
 }
+

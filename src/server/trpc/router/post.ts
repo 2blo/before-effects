@@ -11,6 +11,7 @@ const defaultPostSelect = Prisma.validator<Prisma.PostSelect>()({
   type: true,
   before: true,
   after: true,
+  createdAt: true,
   userId: true,
 });
 
@@ -37,6 +38,7 @@ export const postRouter = router({
         },
       });
     }),
+
   byId: publicProcedure
     .input(
       z.object({
@@ -56,5 +58,48 @@ export const postRouter = router({
         });
       }
       return post;
+    }),
+
+  listByUser: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { userId } = input;
+      const post = await ctx.prisma.post.findMany({
+        where: { userId },
+        select: defaultPostSelect,
+      });
+      if (!post) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No post with id '${userId}'`,
+        });
+      }
+      return post;
+    }),
+
+  deleteById: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+      try {
+        return await ctx.prisma.post.delete({
+          where: {
+            id_userId: {
+              id: input.id,
+              userId: ctx.session.user.id,
+            },
+          },
+          select: defaultPostSelect,
+        });
+      } catch (RecordNotFound) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `There is no post with id '${id}' created by user '${ctx.session.user.id}'. This error should never occur, unless a user is spamming the delete button, or if they "hack" the client and try to delete another user's post.`,
+        });
+      }
     }),
 });

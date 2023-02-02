@@ -7,31 +7,36 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../../../env/server.mjs";
 import { prisma } from "../../../server/db/client";
 
-const google = GoogleProvider({
-  clientId: env.GOOGLE_CLIENT_ID,
-  clientSecret: env.GOOGLE_CLIENT_SECRET,
-});
-
-const email = EmailProvider({
-  server: {
-    host: process.env.EMAIL_SERVER_HOST,
-    port: process.env.EMAIL_SERVER_PORT,
-    auth: {
-      user: process.env.EMAIL_SERVER_USER,
-      pass: process.env.EMAIL_SERVER_PASSWORD,
-    },
-  },
-  from: process.env.EMAIL_FROM,
-});
-
-const providers =
+const providers = [];
+if (
   env.EMAIL_FROM &&
   env.EMAIL_SERVER_HOST &&
   env.EMAIL_SERVER_PASSWORD &&
   env.EMAIL_SERVER_PORT &&
   env.EMAIL_SERVER_USER
-    ? [email]
-    : [google];
+) {
+  providers.push(
+    EmailProvider({
+      server: {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: process.env.EMAIL_SERVER_PORT,
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      },
+      from: process.env.EMAIL_FROM,
+    })
+  );
+}
+if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
+  providers.push(
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    })
+  );
+}
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
