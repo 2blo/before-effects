@@ -1,5 +1,5 @@
 // components/button.ts
-import { VariantProps, cva } from "class-variance-authority";
+import { type VariantProps, cva } from "class-variance-authority";
 
 // ⚠️ Disclaimer: Use of Tailwind CSS is optional
 const button = cva("button", {

@@ -9,7 +9,6 @@ import { Splitscreen } from "@ui/SplitScreen";
 
 const Home: NextPage = () => {
   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
-  const all = trpc.example.getAll.useQuery();
   const { data: sessionData } = useSession();
   return (
     <>

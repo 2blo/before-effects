@@ -3,8 +3,8 @@ import { type VariantProps, cva } from "class-variance-authority";
 import Image from "next/image";
 import React, { type MouseEvent, useState, useRef } from "react";
 import { z } from "zod";
-import { Content, Post } from "@prisma/client";
-import YouTube, { YouTubePlayer, YouTubeEvent } from "react-youtube";
+import { Content, type Post } from "@prisma/client";
+import YouTube, { type YouTubePlayer, type YouTubeEvent } from "react-youtube";
 import { Button } from "./Button";
 import { atom, useAtom } from "jotai";
 
@@ -79,8 +79,6 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
   const maxWidth = 80;
   const maxHeight = 90;
 
-  const beforeReadied = useRef<boolean>(false);
-  const afterReadied = useRef<boolean>(false);
   const [aspectStyle, setAspectStyle] = useState<AspectStyle>({
     height: `${maxHeight}vh`,
     width: `${maxWidth}vw`,
@@ -273,7 +271,7 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
               className={
                 "center absolute left-2/4 bottom-0 z-10 -translate-x-1/2 object-contain"
               }
-              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+              onClick={() => {
                 beforeAudioActive.current = !beforeAudioActive.current;
                 if (beforeAudioActive.current) {
                   beforePlayer.current.unMute();
