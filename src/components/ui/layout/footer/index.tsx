@@ -6,7 +6,7 @@ export const Footer = () => {
       <a
         className="flex justify-center gap-2"
         target="_blank"
-        href="https://github.com/2blo/before-effects/issues/new"
+        href="https://github.com/2blo/before-effects/issues/new/choose"
         rel="noreferrer"
         style={{ color: "inherit", textDecoration: "inherit" }}
       >
