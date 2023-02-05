@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useSession } from "next-auth/react";
 import { TRPCClientError } from "@trpc/client";
+import { Layout } from "@ui/layout";
 
 dayjs.extend(relativeTime);
 
@@ -45,7 +46,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
     <div
       onClick={() => router.push(`/post/${props.id}`)}
       style={{ color: "inherit", textDecoration: "inherit" }}
-      className="group rounded-xl border-8 border-transparent hover:bg-gray-300"
+      className="group rounded-xl border-8 border-transparent hover:bg-white/5"
     >
       <Image
         className="h-[135px] w-[270px] rounded-tr-xl rounded-tl-xl rounded-br-xl object-cover"
@@ -58,9 +59,11 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
         width={2000}
         height={2000}
       ></Image>
-      <h5 className="text-lg">{props.title}</h5>
+      <h5 className="text-lg text-white">{props.title}</h5>
       <div className="flex items-end justify-between">
-        <h6 className="text-sm">{dayjs(props.createdat).fromNow()}</h6>
+        <h6 className="text-sm text-white">
+          {dayjs(props.createdat).fromNow()}
+        </h6>
         <div onClick={(e) => e.stopPropagation()}>
           {sessionData?.user?.id === props.userId ? (
             <MenuDropDown
@@ -93,39 +96,48 @@ const UserPage: NextPage = () => {
   }
 
   return (
-    <div className="mx-auto w-3/4 flex-col space-y-10">
-      <div className="flex gap-2">
-        <Image
-          className="h-32 w-32 rounded-full object-cover"
-          src="/lifeform.jpg"
-          alt="alt"
-          width={1000}
-          height={1000}
-        />
-        <h1 className="text-4xl" style={{ alignSelf: "flex-end" }}>
-          {"User name"}
-        </h1>
-      </div>
-      {userQuery.isReady && postQuery.status === "success" ? (
-        <div className="grid grid-cols-fluid justify-center gap-x-4 gap-y-16">
-          {SortByDescendingDate(postQuery.data.slice()).map((item) => (
-            <Thumbnail
-              id={item.id}
-              contenttype={item.type}
-              after={item.after}
-              createdat={item.createdAt}
-              className="h-16 w-32"
-              key={item.id}
-              title={item.title}
-              userId={item.userId}
-              onDelete={() => postQuery.refetch()}
-            ></Thumbnail>
-          ))}
+    <Layout>
+      <main>
+        <div className="min-h-screen bg-gradient-to-b from-[#110d0d] to-[#450000] pt-24 pb-24">
+          <div className="mx-auto w-3/4 flex-col space-y-10">
+            <div className="flex gap-2">
+              <Image
+                className="h-32 w-32 rounded-full object-cover"
+                src="/lifeform.jpg"
+                alt="alt"
+                width={1000}
+                height={1000}
+              />
+              <h1
+                className="text-4xl text-white"
+                style={{ alignSelf: "flex-end" }}
+              >
+                {"User name"}
+              </h1>
+            </div>
+            {userQuery.isReady && postQuery.status === "success" ? (
+              <div className="grid grid-cols-fluid justify-center gap-x-4 gap-y-16">
+                {SortByDescendingDate(postQuery.data.slice()).map((item) => (
+                  <Thumbnail
+                    id={item.id}
+                    contenttype={item.type}
+                    after={item.after}
+                    createdat={item.createdAt}
+                    className="h-16 w-32"
+                    key={item.id}
+                    title={item.title}
+                    userId={item.userId}
+                    onDelete={() => postQuery.refetch()}
+                  ></Thumbnail>
+                ))}
+              </div>
+            ) : (
+              <div>loading...</div>
+            )}
+          </div>
         </div>
-      ) : (
-        <div>loading...</div>
-      )}
-    </div>
+      </main>
+    </Layout>
   );
 };
 

@@ -1,6 +1,12 @@
 import { Menu, Transition, Dialog } from "@headlessui/react";
-import { Fragment, useState, type SVGProps } from "react";
-import { Bars3Icon } from "@heroicons/react/20/solid";
+import { Fragment, useState } from "react";
+import {
+  Bars3Icon,
+  PencilSquareIcon,
+  TrashIcon,
+} from "@heroicons/react/20/solid";
+import { Button } from "./Button";
+import { inListIconProps } from "./Svg";
 
 export interface MenuProps extends React.HTMLAttributes<HTMLDivElement> {
   onDelete: () => void;
@@ -48,7 +54,7 @@ const MenuDropDown: React.FC<MenuProps> = ({ ...props }) => {
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900"
                 >
-                  Are you sure you want to delete this Post?
+                  Do you want to delete this Post?
                 </Dialog.Title>
 
                 <div className="mt-4 flex gap-4">
@@ -97,147 +103,32 @@ const MenuDropDown: React.FC<MenuProps> = ({ ...props }) => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-200 rounded-md bg-gray-300 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="px-1 py-1 ">
-            <Menu.Item>
-              {({ active }) => (
-                <button
-                  className={`${
-                    active ? "bg-gray-400 text-white" : "text-gray-900"
-                  } group flex h-10 w-full items-center rounded-md px-2 py-2 text-sm`}
-                >
-                  {active ? (
-                    <EditActiveIcon
-                      className="mr-2 h-5 w-5"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    <EditInactiveIcon
-                      className="mr-2 h-5 w-5"
-                      aria-hidden="true"
-                    />
-                  )}
-                  Edit
-                </button>
-              )}
-            </Menu.Item>
-          </div>
-          <div className="px-1 py-1">
-            <Menu.Item>
-              {({ active }) => (
-                <button
-                  className={`${
-                    active ? "bg-red-400 text-white" : "text-gray-900"
-                  } group flex h-10 w-full items-center rounded-md px-2 py-2 text-sm`}
-                  onClick={() => openModal()}
-                >
-                  <div
-                    className="absolute flex"
-                    style={{ pointerEvents: "none" }}
-                  >
-                    {active ? (
-                      <DeleteActiveIcon
-                        className="mr-2 h-5 w-5 text-pink-400"
-                        aria-hidden="true"
-                      />
-                    ) : (
-                      <DeleteInactiveIcon
-                        className="mr-2 h-5 w-5 text-pink-400"
-                        aria-hidden="true"
-                      />
-                    )}
-                    Delete
-                  </div>
-                </button>
-              )}
-            </Menu.Item>
-          </div>
+        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-black bg-opacity-30 shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Item>
+            {({ active }) => (
+              <Button intent={"inList"} hover={active}>
+                <PencilSquareIcon {...inListIconProps}></PencilSquareIcon>
+                Edit
+              </Button>
+            )}
+          </Menu.Item>
+
+          <Menu.Item>
+            {({ active }) => (
+              <Button
+                intent={"inList"}
+                hover={active}
+                onClick={() => openModal()}
+              >
+                <TrashIcon {...inListIconProps}></TrashIcon>
+                Delete
+              </Button>
+            )}
+          </Menu.Item>
         </Menu.Items>
       </Transition>
     </Menu>
   );
 };
-
-function EditInactiveIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M4 13V16H7L16 7L13 4L4 13Z"
-        fill="#FFFFFF"
-        stroke="#AAAAAA"
-        strokeWidth="2"
-      />
-    </svg>
-  );
-}
-
-function EditActiveIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M4 13V16H7L16 7L13 4L4 13Z"
-        fill="#AAAAAA"
-        stroke="#FFFFFF"
-        strokeWidth="2"
-      />
-    </svg>
-  );
-}
-
-function DeleteInactiveIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect
-        x="5"
-        y="6"
-        width="10"
-        height="10"
-        fill="#FFFFFF"
-        stroke="#FF7777"
-        strokeWidth="2"
-      />
-      <path d="M3 6H17" stroke="#FF7777" strokeWidth="2" />
-      <path d="M8 6V4H12V6" stroke="#FF7777" strokeWidth="2" />
-    </svg>
-  );
-}
-
-function DeleteActiveIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect
-        x="5"
-        y="6"
-        width="10"
-        height="10"
-        fill="#FF7777"
-        stroke="#FFFFFF"
-        strokeWidth="2"
-      />
-      <path d="M3 6H17" stroke="#FFFFFF" strokeWidth="2" />
-      <path d="M8 6V4H12V6" stroke="#FFFFFF" strokeWidth="2" />
-    </svg>
-  );
-}
 
 export default MenuDropDown;

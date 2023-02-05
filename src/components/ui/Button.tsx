@@ -17,10 +17,15 @@ const button = cva("button", {
         "border-gray-400",
         "hover:bg-gray-100",
       ],
+      inList: ["group flex w-full items-center rounded-md px-2 py-2 text-sm"],
     },
     size: {
       small: ["text-sm", "py-1", "px-2"],
       medium: ["text-base", "py-2", "px-4"],
+    },
+    hover: {
+      true: ["bg-white text-neutral-800"],
+      false: ["text-white"],
     },
   },
   compoundVariants: [
@@ -28,7 +33,6 @@ const button = cva("button", {
   ],
   defaultVariants: {
     intent: "primary",
-    size: "medium",
   },
 });
 
@@ -39,6 +43,9 @@ export interface ButtonProps
 export const Button: React.FC<ButtonProps> = ({
   className,
   intent,
+  hover,
   size,
   ...props
-}) => <button className={button({ intent, size, className })} {...props} />;
+}) => (
+  <button className={button({ intent, hover, size, className })} {...props} />
+);
