@@ -1,4 +1,7 @@
 // @ts-check
+// import { remotePatterns } from "./src/utils/config.js";
+import { remotePatterns } from "./src/utils/config.js";
+
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
  * This is especially useful for Docker builds.
@@ -14,23 +17,7 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "preview.redd.it",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "i.ytimg.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "i.redd.it",
-        pathname: "/**",
-      },
-    ],
+    remotePatterns: remotePatterns,
   },
 };
 

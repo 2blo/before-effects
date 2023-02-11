@@ -257,7 +257,7 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
                 "center absolute left-2/4 top-2/4 z-10 -translate-x-1/2 -translate-y-1/2 object-contain"
               }
               onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                (e.target as HTMLButtonElement).hidden = true;
+                e.currentTarget.hidden = true;
                 readyBefore.current = true;
                 preloadingBefore.current = true;
                 beforePlayer.current.seekTo(1);

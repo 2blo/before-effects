@@ -3,6 +3,7 @@ import { z } from "zod";
 import { Content, Prisma } from "@prisma/client";
 import { router, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
+import { getVideoId, uploadInputSchema } from "../../../utils/trpc";
 
 const defaultPostSelect = Prisma.validator<Prisma.PostSelect>()({
   id: true,
@@ -16,25 +17,26 @@ const defaultPostSelect = Prisma.validator<Prisma.PostSelect>()({
 });
 
 export const postRouter = router({
-  uploadUrl: protectedProcedure
-    .input(
-      z.object({
-        title: z.string(),
-        description: z.string(),
-        before: z.string(),
-        after: z.string(),
-        type: z.enum([Content.IMAGE, Content.VIDEO]),
-      })
-    )
+  upload: protectedProcedure
+    .input(uploadInputSchema)
     .mutation(({ ctx, input }) => {
+      const beforeId = getVideoId(input.before);
+      console.log("beforeid " + beforeId);
+      const afterId = getVideoId(input.after);
+      console.log("afterid " + afterId);
+      const [type, before, after] =
+        beforeId && afterId
+          ? [Content.VIDEO, beforeId, afterId]
+          : [Content.IMAGE, input.before, input.after];
+
       return ctx.prisma.post.create({
         data: {
           title: input.title,
           description: input.description,
-          before: input.before,
-          after: input.after,
+          before: before,
+          after: after,
           userId: ctx.session.user.id,
-          type: input.type,
+          type: type,
         },
       });
     }),

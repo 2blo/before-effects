@@ -19,6 +19,13 @@
       "@ui/*": ["./src/components/ui/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.cjs",
+    "**/*.mjs",
+    "src/utils/config.js"
+  ],
   "exclude": ["node_modules"]
 }

@@ -2,8 +2,10 @@ import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
+import { z } from "zod";
 
 import { type AppRouter } from "../server/trpc/router/_app";
+import { whitelistedHostsHint, imageRegex } from "./config";
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
@@ -40,3 +42,24 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
  * @example type HelloOutput = RouterOutputs['example']['hello']
  **/
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
+
+const youtubeRegex = String.raw`(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})`;
+
+const urlHint = `Invalid Youtube or image link, please copy it again. Whitelisted image hosts are: ${whitelistedHostsHint}.`;
+
+const contentSchema = z.union([
+  z.string().url().max(1000).regex(imageRegex, urlHint),
+  z.string().url().max(1000).regex(new RegExp(youtubeRegex, "gi"), urlHint),
+]);
+
+export const uploadInputSchema = z.object({
+  before: contentSchema,
+  after: contentSchema,
+  title: z.string().min(1).max(100),
+  description: z.string().max(1000).optional(),
+});
+
+export function getVideoId(url: string): string | undefined {
+  const match = new RegExp(youtubeRegex, "gi").exec(url);
+  return match === null ? undefined : match[1];
+}
