@@ -47,16 +47,19 @@ const youtubeRegex = String.raw`(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?
 
 const urlHint = `Invalid Youtube or image link, please copy it again. Whitelisted image hosts are: ${whitelistedHostsHint}.`;
 
+const baseSchema = (len: number) =>
+  z.string().max(len, `Cannot exceed ${len} characters.`);
+
 const contentSchema = z.union([
-  z.string().url().max(1000).regex(imageRegex, urlHint),
-  z.string().url().max(1000).regex(new RegExp(youtubeRegex, "gi"), urlHint),
+  baseSchema(1000).url(urlHint).regex(imageRegex, urlHint),
+  baseSchema(1000).url(urlHint).regex(new RegExp(youtubeRegex, "gi"), urlHint),
 ]);
 
 export const uploadInputSchema = z.object({
   before: contentSchema,
   after: contentSchema,
-  title: z.string().min(1).max(100),
-  description: z.string().max(1000).optional(),
+  title: baseSchema(100).min(1, "Cannot be empty."),
+  description: baseSchema(1000).optional(),
 });
 
 export function getVideoId(url: string): string | undefined {
