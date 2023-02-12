@@ -6,6 +6,7 @@ import {
   useAnimationControls,
   type AnimationControls,
 } from "framer-motion";
+import { type MouseEvent } from "react";
 
 const button = cva("button", {
   variants: {
@@ -45,6 +46,7 @@ export interface ButtonProps
   extends HTMLMotionProps<"button">,
     VariantProps<typeof button> {
   clickAnimation?: Parameters<AnimationControls["start"]>[0][];
+  onChildClick?: (e: MouseEvent<HTMLElement>) => void;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -53,14 +55,17 @@ export const Button: React.FC<ButtonProps> = ({
   hover,
   size,
   clickAnimation,
+  onChildClick,
   ...props
 }) => {
   const animationControls = useAnimationControls();
   return (
     <motion.button
       className={button({ intent, hover, size, className })}
-      whileHover={{ scale: 1.2 }}
-      onClick={async () => {
+      onClick={async (e) => {
+        if (onChildClick) {
+          onChildClick(e);
+        }
         for (const keyFrame of clickAnimation ? clickAnimation : []) {
           await animationControls.start(keyFrame);
         }

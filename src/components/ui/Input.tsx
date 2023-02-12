@@ -8,7 +8,7 @@ import { z } from "zod";
 const input = cva("input", {
   variants: {
     intent: {
-      primary: ["w-full rounded-md bg-[rgba(0,0,0,0.4)] text-white px-6 py-6"],
+      primary: ["w-full rounded-md bg-[rgba(0,0,0,0.4)] text-white px-4 py-4"],
     },
   },
   defaultVariants: {
