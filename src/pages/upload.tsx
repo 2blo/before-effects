@@ -5,6 +5,7 @@ import { Input, TextArea, Warning } from "@ui/Input";
 import { useForm, FormProvider, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@ui/Button";
+import { useRouter } from "next/router";
 
 type uploadInput = RouterInputs["post"]["upload"];
 
@@ -13,7 +14,13 @@ const Upload: NextPage = () => {
     resolver: zodResolver(uploadInputSchema),
   });
 
-  const mutation = trpc.post.upload.useMutation();
+  const router = useRouter();
+
+  const mutation = trpc.post.upload.useMutation({
+    onSuccess(data) {
+      router.push(`/post/${data.id}`);
+    },
+  });
 
   const onSubmit: SubmitHandler<uploadInput> = (d) => {
     mutation.mutate({
@@ -28,30 +35,6 @@ const Upload: NextPage = () => {
     <Layout>
       <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-[#110d0d] to-[#450000] py-24 text-white">
         <h1 className="pb-16">New Post</h1>
-        {/* <Image
-          // src={methods.watch("before")}
-          src={"https://i.redd.it/6wdlxkn0c9291.png"}
-          alt=""
-          width={100}
-          height={100}
-          onError={() => console.log("fail aaaaaaaaaaaaaaaaaaaaa")}
-          onInvalid={() => console.log("invalid dddddddddddddddd")}
-          onLoad={() => console.log("loaded -------------------")}
-          // unoptimized
-        ></Image> */}
-        {/* {true ||
-          (methods.watch("before") &&
-            isValidDomain(methods.watch("before")) && (
-              <Image
-                // src={methods.watch("before")}
-                src={"https://i.redd.it/6wdlxkn0c9291.png"}
-                alt=""
-                width={0}
-                height={0}
-                onError={() => console.log("fail")}
-                onLoad={() => console.log("loaded")}
-              ></Image>
-            ))} */}
         <FormProvider {...methods}>
           <form
             onSubmit={methods.handleSubmit((d) => onSubmit(d))}
@@ -100,7 +83,17 @@ const Upload: NextPage = () => {
               </label>
             </div>
             <div className="mt-16 flex justify-center">
-              <Button>
+              <Button
+                clickAnimation={
+                  methods.formState.isValid
+                    ? undefined
+                    : [
+                        { x: 10, transition: { duration: 0.02 } },
+                        { x: -10, transition: { duration: 0.02 } },
+                        { x: 0, transition: { duration: 0.1 } },
+                      ]
+                }
+              >
                 <input type="submit" value="Submit" />
               </Button>
             </div>

@@ -1,7 +1,12 @@
 // components/button.ts
 import { type VariantProps, cva } from "class-variance-authority";
+import {
+  type HTMLMotionProps,
+  motion,
+  useAnimationControls,
+  type AnimationControls,
+} from "framer-motion";
 
-// ⚠️ Disclaimer: Use of Tailwind CSS is optional
 const button = cva("button", {
   variants: {
     intent: {
@@ -37,15 +42,31 @@ const button = cva("button", {
 });
 
 export interface ButtonProps
-  extends React.HTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof button> {}
+  extends HTMLMotionProps<"button">,
+    VariantProps<typeof button> {
+  clickAnimation?: Parameters<AnimationControls["start"]>[0][];
+}
 
 export const Button: React.FC<ButtonProps> = ({
   className,
   intent,
   hover,
   size,
+  clickAnimation,
   ...props
-}) => (
-  <button className={button({ intent, hover, size, className })} {...props} />
-);
+}) => {
+  const animationControls = useAnimationControls();
+  return (
+    <motion.button
+      className={button({ intent, hover, size, className })}
+      whileHover={{ scale: 1.2 }}
+      onClick={async () => {
+        for (const keyFrame of clickAnimation ? clickAnimation : []) {
+          await animationControls.start(keyFrame);
+        }
+      }}
+      {...props}
+      animate={animationControls}
+    />
+  );
+};

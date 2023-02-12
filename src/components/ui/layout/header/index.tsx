@@ -108,7 +108,7 @@ export const Header = () => {
       </Link>
       <div className="flex gap-4">
         <Link href={"/upload"}>
-          <button
+          <Button
             onMouseOver={(e) =>
               (e.currentTarget.innerText = sessionData
                 ? "Upload"
@@ -128,7 +128,7 @@ export const Header = () => {
             // }
           >
             Upload
-          </button>
+          </Button>
         </Link>
         {avatarMenu}
       </div>
