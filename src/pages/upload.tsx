@@ -35,13 +35,35 @@ const Upload: NextPage = () => {
   };
 
   return (
-    <Layout>
-      <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-[#110d0d] to-[#450000] py-24 text-white">
-        <h1 className="pb-16">New Post</h1>
-        <FormProvider {...methods}>
+    <FormProvider {...methods}>
+      <Layout>
+        <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-[#110d0d] to-[#450000] py-24 text-white">
+          <h1 className="pb-2 text-6xl">New Post</h1>
+          <label>
+            {"Upload two versions of a Video or Image to "}
+            <a
+              href="https://www.youtube.com/upload"
+              target="_blank"
+              rel="noreferrer"
+              className="text-white"
+            >
+              Youtube
+            </a>
+            {" or "}
+            <a
+              href="https://www.reddit.com/user/me/submit"
+              target="_blank"
+              rel="noreferrer"
+              className="text-white"
+            >
+              Reddit
+            </a>
+            {" respectively, then paste the links below."}
+          </label>
+
           <form
             onSubmit={methods.handleSubmit((d) => onSubmit(d))}
-            className="w-2/4 flex-col "
+            className="mt-12 w-2/4 flex-col"
           >
             <div className="flex justify-center gap-6">
               <label className="w-full">
@@ -158,9 +180,9 @@ const Upload: NextPage = () => {
               </Button>
             </div>
           </form>
-        </FormProvider>
-      </div>
-    </Layout>
+        </div>
+      </Layout>
+    </FormProvider>
   );
 };
 
