@@ -1,15 +1,25 @@
 // components/button.ts
 import { type VariantProps, cva } from "class-variance-authority";
+import {
+  type HTMLMotionProps,
+  motion,
+  useAnimationControls,
+  type AnimationControls,
+} from "framer-motion";
+import { type MouseEvent } from "react";
 
-// ⚠️ Disclaimer: Use of Tailwind CSS is optional
 const button = cva("button", {
   variants: {
     intent: {
       primary: [
-        "bg-blue-500",
+        "bg-red-800",
         "text-white",
         "border-transparent",
-        "hover:bg-blue-600",
+        "hocus:bg-red-900",
+        "py-2",
+        "px-6",
+        "rounded-md",
+        "shadow-2xl",
       ],
       secondary: [
         "bg-white",
@@ -37,15 +47,35 @@ const button = cva("button", {
 });
 
 export interface ButtonProps
-  extends React.HTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof button> {}
+  extends HTMLMotionProps<"button">,
+    VariantProps<typeof button> {
+  clickAnimation?: Parameters<AnimationControls["start"]>[0][];
+  onChildClick?: (e: MouseEvent<HTMLElement>) => void;
+}
 
 export const Button: React.FC<ButtonProps> = ({
   className,
   intent,
   hover,
   size,
+  clickAnimation,
+  onChildClick,
   ...props
-}) => (
-  <button className={button({ intent, hover, size, className })} {...props} />
-);
+}) => {
+  const animationControls = useAnimationControls();
+  return (
+    <motion.button
+      className={button({ intent, hover, size, className })}
+      onClick={async (e) => {
+        if (onChildClick) {
+          onChildClick(e);
+        }
+        for (const keyFrame of clickAnimation ? clickAnimation : []) {
+          await animationControls.start(keyFrame);
+        }
+      }}
+      {...props}
+      animate={animationControls}
+    />
+  );
+};
