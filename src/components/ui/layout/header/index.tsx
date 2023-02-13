@@ -109,7 +109,7 @@ export const Header = () => {
       <div className="flex gap-4">
         {!router.asPath.startsWith(`/upload`) && (
           <Link href={"/upload"}>
-            <Button className="m-2 rounded-full bg-white/5 px-10 py-3 font-semibold text-white no-underline outline outline-1 outline-red-800 transition hocus:bg-white/20">
+            <Button className="m-2  px-10 py-3 font-semibold text-white no-underline outline outline-1 outline-red-800 transition">
               Upload
             </Button>
           </Link>

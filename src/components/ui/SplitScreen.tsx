@@ -254,7 +254,7 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
             ></YouTube>
             <Button
               className={
-                "center absolute left-2/4 top-2/4 z-10 -translate-x-1/2 -translate-y-1/2 object-contain"
+                "center absolute left-2/4 top-2/4 z-10 -translate-x-1/2 -translate-y-1/2 object-contain py-6 px-12 text-3xl"
               }
               onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                 e.currentTarget.hidden = true;

@@ -12,10 +12,14 @@ const button = cva("button", {
   variants: {
     intent: {
       primary: [
-        "bg-blue-500",
+        "bg-red-800",
         "text-white",
         "border-transparent",
-        "hover:bg-blue-600",
+        "hocus:bg-red-900",
+        "py-2",
+        "px-6",
+        "rounded-md",
+        "shadow-2xl",
       ],
       secondary: [
         "bg-white",
