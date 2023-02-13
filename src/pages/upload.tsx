@@ -66,7 +66,7 @@ const Upload: NextPage = () => {
     <FormProvider {...methods}>
       <Layout>
         <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-[#110d0d] to-[#450000] py-24 text-white">
-          <h1 className="pb-2 text-6xl">New Post</h1>
+          <h1 className="pb-4 text-6xl">New Post</h1>
 
           <label>
             {"Upload two versions of a Video or Image to "}
@@ -97,7 +97,10 @@ const Upload: NextPage = () => {
             <div className="flex justify-center gap-6">
               <label className="w-full">
                 Before Version:
-                <Input name="before" />
+                <Input
+                  name="before"
+                  validity={methods.formState.errors.before ? "error" : "ok"}
+                />
                 {methods.formState.errors.before?.message && (
                   <Warning>
                     {methods.formState.errors.before?.message.toString()}
@@ -106,7 +109,10 @@ const Upload: NextPage = () => {
               </label>
               <label className="w-full">
                 After Version:
-                <Input name="after" />
+                <Input
+                  name="after"
+                  validity={methods.formState.errors.after ? "error" : "ok"}
+                />
                 {methods.formState.errors.after?.message && (
                   <Warning>
                     {methods.formState.errors.after?.message.toString()}
@@ -117,7 +123,10 @@ const Upload: NextPage = () => {
             <div className="mt-12 mb-6">
               <label>
                 Title:
-                <Input name="title" />
+                <Input
+                  name="title"
+                  validity={methods.formState.errors.title ? "error" : "ok"}
+                />
                 {methods.formState.errors.title?.message && (
                   <Warning>
                     {methods.formState.errors.title?.message.toString()}
@@ -128,7 +137,13 @@ const Upload: NextPage = () => {
             <div>
               <label>
                 Description:
-                <TextArea name="description" className="h-32" />
+                <TextArea
+                  name="description"
+                  className="h-32"
+                  validity={
+                    methods.formState.errors.description ? "error" : "ok"
+                  }
+                />
                 {methods.formState.errors.description?.message && (
                   <Warning>
                     {methods.formState.errors.description?.message.toString()}

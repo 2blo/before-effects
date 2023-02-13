@@ -8,7 +8,13 @@ import { z } from "zod";
 const input = cva("input", {
   variants: {
     intent: {
-      primary: ["w-full rounded-md bg-[rgba(0,0,0,0.4)] text-white px-4 py-4"],
+      primary: [
+        "w-full rounded-md bg-[rgba(0,0,0,0.4)] text-white px-4 py-4 border-2",
+      ],
+    },
+    validity: {
+      error: ["border-red-700 border-opacity-100"],
+      ok: ["border-opacity-0 border-red-500"],
     },
   },
   defaultVariants: {
@@ -19,7 +25,7 @@ const input = cva("input", {
 const warning = cva("warning", {
   variants: {
     intent: {
-      primary: ["bg-red-800 text-white"],
+      primary: ["text-red-500 absolute"],
     },
   },
   defaultVariants: {
@@ -47,6 +53,7 @@ export interface WarningProps
 export const Input: React.FC<InputProps> = ({
   className,
   intent,
+  validity,
   ...props
 }) => {
   const c = useFormContext();
@@ -54,7 +61,7 @@ export const Input: React.FC<InputProps> = ({
     <input
       {...c.register(props.name)}
       {...props}
-      className={input({ intent, className })}
+      className={input({ intent, validity, className })}
     />
   );
 };
@@ -62,6 +69,7 @@ export const Input: React.FC<InputProps> = ({
 export const TextArea: React.FC<TextAreaProps> = ({
   className,
   intent,
+  validity,
   ...props
 }) => {
   const c = useFormContext();
@@ -69,7 +77,7 @@ export const TextArea: React.FC<TextAreaProps> = ({
     <textarea
       {...c.register(props.name)}
       {...props}
-      className={input({ intent, className })}
+      className={input({ intent, validity, className })}
     />
   );
 };

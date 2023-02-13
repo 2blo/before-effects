@@ -5,7 +5,7 @@ import superjson from "superjson";
 import { z } from "zod";
 
 import { type AppRouter } from "../server/trpc/router/_app";
-import { whitelistedHostsHint, imageRegex } from "./config";
+import { imageRegex } from "./config";
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
@@ -45,7 +45,7 @@ export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 const youtubeRegex = String.raw`(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})`;
 
-const urlHint = `Invalid Youtube or image link, please copy it again. Whitelisted image hosts are: ${whitelistedHostsHint}.`;
+const urlHint = "Invalid url or image host.";
 
 const baseSchema = (len: number) =>
   z.string().max(len, `Cannot exceed ${len} characters.`);

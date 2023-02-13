@@ -27,10 +27,7 @@ const imageRegex = new RegExp(
   "i"
 );
 
-const whitelistedHostsHint = "Reddit and Discord";
-
 module.exports = {
   remotePatterns: remotePatterns,
   imageRegex: imageRegex,
-  whitelistedHostsHint: whitelistedHostsHint,
 };
