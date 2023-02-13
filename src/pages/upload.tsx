@@ -7,25 +7,51 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@ui/Button";
 import { useRouter } from "next/router";
 import { motion, useAnimationControls } from "framer-motion";
+import { signIn, useSession } from "next-auth/react";
+import { useState } from "react";
+import { usePersistForm } from "../utils/userutils";
 
-type uploadInput = RouterInputs["post"]["upload"];
+type UploadInput = RouterInputs["post"]["upload"];
+const FORM_DATA_KEY = "app_form_local_data";
 
 const Upload: NextPage = () => {
-  const methods = useForm<uploadInput>({
+  const router = useRouter();
+
+  const getSavedData = () => {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+    const data = localStorage.getItem(FORM_DATA_KEY);
+    if (data) {
+      try {
+        return JSON.parse(data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    return undefined;
+  };
+
+  const methods = useForm<UploadInput>({
+    defaultValues: getSavedData(),
     resolver: zodResolver(uploadInputSchema),
   });
 
-  const router = useRouter();
+  const { data: sessionData } = useSession();
+
+  const [submitting, setSubmitting] = useState(false);
 
   const mutation = trpc.post.upload.useMutation({
     onSuccess(data) {
+      setSubmitting(true);
+      localStorage.removeItem(FORM_DATA_KEY);
       router.push(`/post/${data.id}`);
     },
   });
   const frameAnimationControls = useAnimationControls();
   const loadAnimationControls = useAnimationControls();
 
-  const onSubmit: SubmitHandler<uploadInput> = (d) => {
+  const onSubmit: SubmitHandler<UploadInput> = (d) => {
     mutation.mutate({
       title: d.title,
       description: d.description,
@@ -34,11 +60,14 @@ const Upload: NextPage = () => {
     });
   };
 
+  usePersistForm<UploadInput>(methods.watch(), FORM_DATA_KEY, !submitting);
+
   return (
     <FormProvider {...methods}>
       <Layout>
         <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-[#110d0d] to-[#450000] py-24 text-white">
           <h1 className="pb-2 text-6xl">New Post</h1>
+
           <label>
             {"Upload two versions of a Video or Image to "}
             <a
@@ -127,30 +156,35 @@ const Upload: NextPage = () => {
                 />
               </motion.svg>
               <Button
-                className="absolute w-16"
-                onChildClick={async () => {
-                  if (methods.formState.isValid) {
-                    await frameAnimationControls.start({
-                      y: 80,
-                      opacity: 0,
-                      transition: { duration: 0 },
-                    });
+                type={sessionData ? "submit" : "button"}
+                className="absolute"
+                onChildClick={
+                  sessionData
+                    ? async () => {
+                        if (methods.formState.isValid) {
+                          await frameAnimationControls.start({
+                            y: 80,
+                            opacity: 0,
+                            transition: { duration: 0 },
+                          });
 
-                    frameAnimationControls.start({
-                      y: 0,
-                      opacity: 1,
-                      transition: { delay: 0.3 },
-                    });
+                          frameAnimationControls.start({
+                            y: 0,
+                            opacity: 1,
+                            transition: { delay: 0.3 },
+                          });
 
-                    await loadAnimationControls.start({
-                      rotate: 360 * 11,
-                      transition: {
-                        duration: 15,
-                        ease: [0.01, 0.82, 0.05, 0.78],
-                      },
-                    });
-                  }
-                }}
+                          await loadAnimationControls.start({
+                            rotate: 360 * 11,
+                            transition: {
+                              duration: 15,
+                              ease: [0.01, 0.82, 0.05, 0.78],
+                            },
+                          });
+                        }
+                      }
+                    : () => signIn()
+                }
                 clickAnimation={
                   methods.formState.isValid
                     ? [
@@ -176,7 +210,10 @@ const Upload: NextPage = () => {
                       ]
                 }
               >
-                <input type="submit" value="Submit" />
+                <input
+                  type={sessionData ? "submit" : "button"}
+                  value={sessionData ? "Publish" : "Sign in to Publish"}
+                />
               </Button>
             </div>
           </form>

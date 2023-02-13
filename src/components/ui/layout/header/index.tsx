@@ -107,29 +107,13 @@ export const Header = () => {
         </h1>
       </Link>
       <div className="flex gap-4">
-        <Link href={"/upload"}>
-          <Button
-            onMouseOver={(e) =>
-              (e.currentTarget.innerText = sessionData
-                ? "Upload"
-                : "Sign in to Upload")
-            }
-            onMouseLeave={(e) => (e.currentTarget.innerText = "Upload")}
-            onFocus={(e) =>
-              (e.currentTarget.innerText = sessionData
-                ? "Upload"
-                : "Sign in to Upload")
-            }
-            onBlur={(e) => (e.currentTarget.innerText = "Upload")}
-            className="m-2 rounded-full bg-white/5 px-10 py-3 font-semibold text-white no-underline outline outline-1 outline-red-800 transition hocus:bg-white/20"
-            // TODO reduce hurdle - require signin on submit
-            // onClick={
-            //   sessionData ? () => alert("go to upload page") : () => signIn()
-            // }
-          >
-            Upload
-          </Button>
-        </Link>
+        {!router.asPath.startsWith(`/upload`) && (
+          <Link href={"/upload"}>
+            <Button className="m-2 rounded-full bg-white/5 px-10 py-3 font-semibold text-white no-underline outline outline-1 outline-red-800 transition hocus:bg-white/20">
+              Upload
+            </Button>
+          </Link>
+        )}
         {avatarMenu}
       </div>
     </div>
