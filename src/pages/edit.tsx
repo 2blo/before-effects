@@ -1,8 +1,6 @@
 import { Content, type Post } from "@prisma/client";
 import ManagePost from "@ui/ManagePost";
 import { type NextPage } from "next";
-import { trpc } from "../../utils/trpc";
-import NextError from "next/error";
 import { useRouter } from "next/router";
 
 function idToUrl(id: Post["before"] | Post["after"], type: Post["type"]) {

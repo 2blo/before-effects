@@ -77,16 +77,17 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
               onEdit={() => {
                 router.push(
                   {
-                    pathname: `/edit/${props.id}`,
+                    pathname: "/edit",
                     query: {
+                      id: props.id,
                       before: props.before,
                       after: props.after,
                       title: props.title,
                       description: props.description,
-                      type: props.type.toString(),
+                      type: props.type,
                     },
                   },
-                  `/edit/${props.id}`
+                  "/edit"
                 );
               }}
             ></MenuDropDown>
