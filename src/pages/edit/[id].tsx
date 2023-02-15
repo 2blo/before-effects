@@ -10,27 +10,21 @@ function idToUrl(id: Post["before"] | Post["after"], type: Post["type"]) {
 }
 
 const EditPost: NextPage = () => {
-  const id = useRouter().query.id as string;
-  const postQuery = trpc.post.byId.useQuery({ id });
-  if (postQuery.error) {
-    return (
-      <NextError
-        title={postQuery.error.message}
-        statusCode={postQuery.error.data?.httpStatus ?? 500}
-      />
-    );
-  }
-  if (postQuery.status !== "success") {
-    return <>Loading...</>;
-  }
-  const { data } = postQuery;
+  const router = useRouter();
+  const id = router.query.id as Post["id"];
+  const before = router.query.before as Post["before"];
+  const after = router.query.after as Post["after"];
+  const title = router.query.title as Post["title"];
+  const description = router.query.description as Post["description"];
+  const type = router.query.type as Post["type"];
+
   return (
     <ManagePost
       post={{
-        before: idToUrl(data.before, data.type),
-        after: idToUrl(data.after, data.type),
-        title: data.title,
-        description: data.description,
+        before: idToUrl(before, type),
+        after: idToUrl(after, type),
+        title: title,
+        description: description,
         id: id,
       }}
     />

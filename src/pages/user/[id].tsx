@@ -19,10 +19,12 @@ export interface ThumbnailProps extends React.HTMLAttributes<HTMLDivElement> {
   contenttype: Content;
   title: Post["title"];
   createdat: Post["createdAt"];
+  before: Post["before"];
   after: Post["after"];
   description: Post["description"];
   onDelete: () => void;
   userId: Post["userId"];
+  type: Post["type"];
 }
 
 const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
@@ -73,7 +75,19 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ ...props }) => {
                 deleteMutation.mutate({ id: props.id });
               }}
               onEdit={() => {
-                router.push(`/edit/${props.id}`);
+                router.push(
+                  {
+                    pathname: `/edit/${props.id}`,
+                    query: {
+                      before: props.before,
+                      after: props.after,
+                      title: props.title,
+                      description: props.description,
+                      type: props.type.toString(),
+                    },
+                  },
+                  `/edit/${props.id}`
+                );
               }}
             ></MenuDropDown>
           ) : (
@@ -125,12 +139,14 @@ const UserPage: NextPage = () => {
                   <Thumbnail
                     id={item.id}
                     contenttype={item.type}
+                    before={item.before}
                     after={item.after}
                     createdat={item.createdAt}
                     className="h-16 w-32"
                     key={item.id}
                     title={item.title}
                     description={item.description}
+                    type={item.type}
                     userId={item.userId}
                     onDelete={() => postQuery.refetch()}
                   ></Thumbnail>
