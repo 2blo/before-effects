@@ -11,6 +11,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useState } from "react";
 import { usePersistForm } from "../../utils/userutils";
 import { type Post } from "@prisma/client";
+import Link from "next/link";
 
 const FORM_DATA_KEY = "before-effects";
 type EditInput = RouterInputs["post"]["edit"];
@@ -187,91 +188,101 @@ const ManagePost: NextPage<{ post?: EditInput }> = ({ post }) => {
                 )}
               </label>
             </div>
-            <div className="mt-10 mb-10 flex items-center justify-center">
-              <motion.svg
-                width="100"
-                height="100"
-                initial={{ opacity: 0 }}
-                animate={frameAnimationControls}
-              >
-                <motion.circle
-                  cx="50"
-                  cy="50"
-                  r="49"
-                  fill="none"
-                  stroke="#ffffff"
-                  strokeWidth="2"
-                  strokeDashoffset={`${(2 * 49 * Math.PI) / 8 / 2}`}
-                  initial={{ strokeDasharray: `${(2 * 49 * Math.PI) / 8}` }}
-                  animate={loadAnimationControls}
-                />
-              </motion.svg>
-              <Button
-                type={sessionData ? "submit" : "button"}
-                className="absolute"
-                onChildClick={
-                  sessionData
-                    ? async () => {
-                        if (methods.formState.isValid) {
-                          await frameAnimationControls.start({
-                            y: 80,
-                            opacity: 0,
-                            transition: { duration: 0 },
-                          });
-
-                          frameAnimationControls.start({
-                            y: 0,
-                            opacity: 1,
-                            transition: { delay: 0.3 },
-                          });
-
-                          await loadAnimationControls.start({
-                            rotate: 360 * 11,
-                            transition: {
-                              duration: 15,
-                              ease: [0.01, 0.82, 0.05, 0.78],
-                            },
-                          });
-                        }
-                      }
-                    : () => signIn()
-                }
-                clickAnimation={
-                  methods.formState.isValid
-                    ? [
-                        {
-                          y: -20,
-                          transition: { duration: 0.2, ease: "circOut" },
-                        },
-                        {
-                          y: 100,
-                          opacity: 1,
-                          transition: { duration: 0.2, ease: "circIn" },
-                        },
-                        {
-                          y: 140,
-                          opacity: 0,
-                          transition: { duration: 0.05, ease: "linear" },
-                        },
-                      ]
-                    : [
-                        { x: 10, transition: { duration: 0.02 } },
-                        { x: -10, transition: { duration: 0.02 } },
-                        { x: 0, transition: { duration: 0.1 } },
-                      ]
-                }
-              >
-                <input
+            <div className="flex items-center justify-center gap-4">
+              {post && (
+                <Link
+                  href={`/user/${sessionData?.user?.id}`}
+                  style={{ color: "inherit", textDecoration: "inherit" }}
+                >
+                  <Button intent="secondary">Cancel</Button>
+                </Link>
+              )}
+              <div className="mt-10 mb-10 flex items-center justify-center">
+                <motion.svg
+                  width="100"
+                  height="100"
+                  initial={{ opacity: 0 }}
+                  animate={frameAnimationControls}
+                >
+                  <motion.circle
+                    cx="50"
+                    cy="50"
+                    r="49"
+                    fill="none"
+                    stroke="#ffffff"
+                    strokeWidth="2"
+                    strokeDashoffset={`${(2 * 49 * Math.PI) / 8 / 2}`}
+                    initial={{ strokeDasharray: `${(2 * 49 * Math.PI) / 8}` }}
+                    animate={loadAnimationControls}
+                  />
+                </motion.svg>
+                <Button
                   type={sessionData ? "submit" : "button"}
-                  value={
+                  className="absolute"
+                  onChildClick={
                     sessionData
-                      ? post
-                        ? "Save"
-                        : "Publish"
-                      : "Sign in to Publish"
+                      ? async () => {
+                          if (methods.formState.isValid) {
+                            await frameAnimationControls.start({
+                              y: 80,
+                              opacity: 0,
+                              transition: { duration: 0 },
+                            });
+
+                            frameAnimationControls.start({
+                              y: 0,
+                              opacity: 1,
+                              transition: { delay: 0.3 },
+                            });
+
+                            await loadAnimationControls.start({
+                              rotate: 360 * 11,
+                              transition: {
+                                duration: 15,
+                                ease: [0.01, 0.82, 0.05, 0.78],
+                              },
+                            });
+                          }
+                        }
+                      : () => signIn()
                   }
-                />
-              </Button>
+                  clickAnimation={
+                    methods.formState.isValid
+                      ? [
+                          {
+                            y: -20,
+                            transition: { duration: 0.2, ease: "circOut" },
+                          },
+                          {
+                            y: 100,
+                            opacity: 1,
+                            transition: { duration: 0.2, ease: "circIn" },
+                          },
+                          {
+                            y: 140,
+                            opacity: 0,
+                            transition: { duration: 0.05, ease: "linear" },
+                          },
+                        ]
+                      : [
+                          { x: 10, transition: { duration: 0.02 } },
+                          { x: -10, transition: { duration: 0.02 } },
+                          { x: 0, transition: { duration: 0.1 } },
+                        ]
+                  }
+                >
+                  <input
+                    type={sessionData ? "submit" : "button"}
+                    value={
+                      sessionData
+                        ? post
+                          ? "Save"
+                          : "Publish"
+                        : "Sign in to Publish"
+                    }
+                  />
+                </Button>
+              </div>
             </div>
           </form>
         </div>
