@@ -3,7 +3,11 @@ import { z } from "zod";
 import { Content, Prisma } from "@prisma/client";
 import { router, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
-import { getVideoId, uploadInputSchema } from "../../../utils/trpc";
+import {
+  editInputSchema,
+  getVideoId,
+  uploadInputSchema,
+} from "../../../utils/trpc";
 
 const defaultPostSelect = Prisma.validator<Prisma.PostSelect>()({
   id: true,
@@ -21,9 +25,7 @@ export const postRouter = router({
     .input(uploadInputSchema)
     .mutation(({ ctx, input }) => {
       const beforeId = getVideoId(input.before);
-      console.log("beforeid " + beforeId);
       const afterId = getVideoId(input.after);
-      console.log("afterid " + afterId);
       const [type, before, after] =
         beforeId && afterId
           ? [Content.VIDEO, beforeId, afterId]
@@ -40,6 +42,31 @@ export const postRouter = router({
         },
       });
     }),
+  edit: protectedProcedure.input(editInputSchema).mutation(({ ctx, input }) => {
+    const beforeId = getVideoId(input.before);
+    const afterId = getVideoId(input.after);
+    const [type, before, after] =
+      beforeId && afterId
+        ? [Content.VIDEO, beforeId, afterId]
+        : [Content.IMAGE, input.before, input.after];
+
+    return ctx.prisma.post.update({
+      where: {
+        id_userId: {
+          id: input.id,
+          userId: ctx.session.user.id,
+        },
+      },
+      data: {
+        title: input.title,
+        description: input.description,
+        before: before,
+        after: after,
+        userId: ctx.session.user.id,
+        type: type,
+      },
+    });
+  }),
 
   byId: publicProcedure
     .input(

@@ -7,10 +7,10 @@ import {
 } from "@heroicons/react/20/solid";
 import { Button } from "./Button";
 import { inListIconProps } from "./Svg";
-import Link from "next/link";
 
 export interface MenuProps extends React.HTMLAttributes<HTMLDivElement> {
   onDelete: () => void;
+  onEdit: () => void;
 }
 
 const MenuDropDown: React.FC<MenuProps> = ({ ...props }) => {
@@ -107,12 +107,14 @@ const MenuDropDown: React.FC<MenuProps> = ({ ...props }) => {
         <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-black bg-opacity-30 shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none">
           <Menu.Item>
             {({ active }) => (
-              <Link href={"/edit"}>
-                <Button intent={"inList"} hover={active}>
-                  <PencilSquareIcon {...inListIconProps}></PencilSquareIcon>
-                  Edit
-                </Button>
-              </Link>
+              <Button
+                intent={"inList"}
+                hover={active}
+                onClick={() => props.onEdit()}
+              >
+                <PencilSquareIcon {...inListIconProps}></PencilSquareIcon>
+                Edit
+              </Button>
             )}
           </Menu.Item>
 

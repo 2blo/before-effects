@@ -10,12 +10,19 @@ import { motion, useAnimationControls } from "framer-motion";
 import { signIn, useSession } from "next-auth/react";
 import { useState } from "react";
 import { usePersistForm } from "../../utils/userutils";
+import { type Post } from "@prisma/client";
 
-type UploadInput = RouterInputs["post"]["upload"];
-const FORM_DATA_KEY = "app_form_local_data";
+const FORM_DATA_KEY = "before-effects";
+type EditInput = RouterInputs["post"]["edit"];
 
-const Upload: NextPage = () => {
+const ManagePost: NextPage<{ post?: EditInput }> = ({ post }) => {
   const router = useRouter();
+  const { data: sessionData, status: status } = useSession();
+  if (post && status == "unauthenticated") {
+    router.replace("/");
+  }
+
+  type UploadInput = RouterInputs["post"]["upload"];
 
   const getSavedData = () => {
     if (typeof window === "undefined") {
@@ -33,40 +40,69 @@ const Upload: NextPage = () => {
   };
 
   const methods = useForm<UploadInput>({
-    defaultValues: getSavedData(),
+    defaultValues: post
+      ? {
+          before: post.before,
+          after: post.after,
+          title: post.title,
+          description: post.description,
+        }
+      : getSavedData(),
     resolver: zodResolver(uploadInputSchema),
   });
 
-  const { data: sessionData } = useSession();
-
   const [submitting, setSubmitting] = useState(false);
 
-  const mutation = trpc.post.upload.useMutation({
-    onSuccess(data) {
-      setSubmitting(true);
+  const onSuccess = (id: Post["id"]) => {
+    setSubmitting(true);
+    if (!post) {
       localStorage.removeItem(FORM_DATA_KEY);
-      router.push(`/post/${data.id}`);
+    }
+    router.push(`/post/${id}`);
+  };
+  const uploadMutation = trpc.post.upload.useMutation({
+    onSuccess(data) {
+      onSuccess(data.id);
+    },
+  });
+  const editMutation = trpc.post.edit.useMutation({
+    onSuccess(data) {
+      onSuccess(data.id);
     },
   });
   const frameAnimationControls = useAnimationControls();
   const loadAnimationControls = useAnimationControls();
 
   const onSubmit: SubmitHandler<UploadInput> = (d) => {
-    mutation.mutate({
-      title: d.title,
-      description: d.description,
-      before: d.before,
-      after: d.after,
-    });
+    if (post) {
+      editMutation.mutate({
+        title: d.title,
+        description: d.description,
+        before: d.before,
+        after: d.after,
+        id: post.id,
+      });
+    } else {
+      uploadMutation.mutate({
+        title: d.title,
+        description: d.description,
+        before: d.before,
+        after: d.after,
+      });
+    }
   };
 
-  usePersistForm<UploadInput>(methods.watch(), FORM_DATA_KEY, !submitting);
+  usePersistForm<UploadInput>(
+    methods.watch(),
+    FORM_DATA_KEY,
+    !(post || submitting)
+  );
 
   return (
     <FormProvider {...methods}>
       <Layout>
         <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-[#110d0d] to-[#450000] py-24 text-white">
-          <h1 className="pb-4 text-6xl">New Post</h1>
+          <h1 className="pb-4 text-6xl">{`${post ? "Edit" : "New"} Post`}</h1>
 
           <label>
             {"Upload two versions of a Video or Image to "}
@@ -227,7 +263,13 @@ const Upload: NextPage = () => {
               >
                 <input
                   type={sessionData ? "submit" : "button"}
-                  value={sessionData ? "Publish" : "Sign in to Publish"}
+                  value={
+                    sessionData
+                      ? post
+                        ? "Save"
+                        : "Publish"
+                      : "Sign in to Publish"
+                  }
                 />
               </Button>
             </div>
@@ -238,4 +280,4 @@ const Upload: NextPage = () => {
   );
 };
 
-export default Upload;
+export default ManagePost;
