@@ -59,10 +59,10 @@ export const uploadInputSchema = z.object({
   before: contentSchema,
   after: contentSchema,
   title: baseSchema(100).min(1, "Cannot be empty."),
-  description: baseSchema(1000).nullish().optional(),
+  description: baseSchema(1000),
 });
 
-export function getVideoId(url: string): string | undefined {
+export function getVideoId(url: string) {
   const match = new RegExp(youtubeRegex, "gi").exec(url);
   return match === null ? undefined : match[1];
 }
