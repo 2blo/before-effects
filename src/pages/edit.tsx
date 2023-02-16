@@ -15,6 +15,9 @@ const EditPost: NextPage = () => {
   const title = router.query.title as Post["title"];
   const description = router.query.description as Post["description"];
   const type = router.query.type as Post["type"];
+  if (router.isReady && (!id || !type)) {
+    router.push("/");
+  }
 
   return (
     <ManagePost
