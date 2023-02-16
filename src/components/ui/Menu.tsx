@@ -11,6 +11,8 @@ import { inListIconProps } from "./Svg";
 export interface MenuProps extends React.HTMLAttributes<HTMLDivElement> {
   onDelete: () => void;
   onEdit: () => void;
+  discrete: boolean;
+  alignLeft: boolean;
 }
 
 const MenuDropDown: React.FC<MenuProps> = ({ ...props }) => {
@@ -91,7 +93,9 @@ const MenuDropDown: React.FC<MenuProps> = ({ ...props }) => {
       {modal}
       <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-0 px-1.5 py-1.5 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
         <Bars3Icon
-          className=" h-4 w-4 text-gray-600 opacity-0 hover:text-violet-100 group-hover:opacity-100"
+          className={`h-4 w-4 text-white ${
+            props.discrete ? "opacity-0" : ""
+          } hover:text-white group-hover:opacity-100`}
           aria-hidden="true"
         />
       </Menu.Button>
@@ -104,7 +108,11 @@ const MenuDropDown: React.FC<MenuProps> = ({ ...props }) => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-black bg-opacity-30 shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items
+          className={`absolute ${
+            props.alignLeft ? "right-0" : "left-0"
+          } mt-2 w-56 origin-top-right rounded-md bg-black bg-opacity-30 shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none`}
+        >
           <Menu.Item>
             {({ active }) => (
               <Button
