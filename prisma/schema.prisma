@@ -70,7 +70,7 @@ model Post {
   id          String   @id @default(cuid())
   type        Content
   title       String   @db.VarChar(100)
-  description String?  @db.VarChar(1000)
+  description String   @db.VarChar(1000)
   before      String   @db.VarChar(1000)
   after       String   @db.VarChar(1000)
   createdAt   DateTime @default(now())

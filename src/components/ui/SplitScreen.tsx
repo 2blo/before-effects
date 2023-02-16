@@ -253,6 +253,7 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
               onStateChange={onBeforePlayerStateChange}
             ></YouTube>
             <Button
+              intent="opaque"
               className={
                 "center absolute left-2/4 top-2/4 z-10 -translate-x-1/2 -translate-y-1/2 object-contain py-6 px-12 text-3xl"
               }
@@ -268,6 +269,7 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
               Play
             </Button>
             <Button
+              intent="opaque"
               className={
                 "center absolute left-2/4 bottom-0 z-10 -translate-x-1/2 object-contain"
               }

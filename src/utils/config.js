@@ -23,7 +23,7 @@ const imageRegex = new RegExp(
   String.raw`^https:\/\/([a-z0-9]+[.])*(${remotePatterns.reduce(
     (domains, pattern) => `${pattern.hostname.split("**.")[1]}|` + domains,
     ""
-  )})\/(.*)\.(gif|jpe?g|tiff?|png|webp|bmp|tga)$`,
+  )})\/(.*)\.(gif|jpe?g|tiff?|png|webp|bmp|tga)`,
   "i"
 );
 
