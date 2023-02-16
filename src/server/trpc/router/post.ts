@@ -20,36 +20,36 @@ const defaultPostSelect = Prisma.validator<Prisma.PostSelect>()({
   userId: true,
 });
 
+function inferPostFormatting(
+  input: z.infer<typeof uploadInputSchema>,
+  userId: string
+) {
+  const beforeId = getVideoId(input.before);
+  const afterId = getVideoId(input.after);
+  const { type, before, after } =
+    beforeId && afterId
+      ? { type: Content.VIDEO, before: beforeId, after: afterId }
+      : { type: Content.IMAGE, before: input.before, after: input.after };
+  return {
+    title: input.title,
+    description: input.description,
+    before: before,
+    after: after,
+    userId: userId,
+    type: type,
+  };
+}
+
 export const postRouter = router({
   upload: protectedProcedure
     .input(uploadInputSchema)
     .mutation(({ ctx, input }) => {
-      const beforeId = getVideoId(input.before);
-      const afterId = getVideoId(input.after);
-      const [type, before, after] =
-        beforeId && afterId
-          ? [Content.VIDEO, beforeId, afterId]
-          : [Content.IMAGE, input.before, input.after];
-
       return ctx.prisma.post.create({
-        data: {
-          title: input.title,
-          description: input.description,
-          before: before,
-          after: after,
-          userId: ctx.session.user.id,
-          type: type,
-        },
+        data: inferPostFormatting(input, ctx.session.user.id),
       });
     }),
-  edit: protectedProcedure.input(editInputSchema).mutation(({ ctx, input }) => {
-    const beforeId = getVideoId(input.before);
-    const afterId = getVideoId(input.after);
-    const [type, before, after] =
-      beforeId && afterId
-        ? [Content.VIDEO, beforeId, afterId]
-        : [Content.IMAGE, input.before, input.after];
 
+  edit: protectedProcedure.input(editInputSchema).mutation(({ ctx, input }) => {
     return ctx.prisma.post.update({
       where: {
         id_userId: {
@@ -57,14 +57,7 @@ export const postRouter = router({
           userId: ctx.session.user.id,
         },
       },
-      data: {
-        title: input.title,
-        description: input.description,
-        before: before,
-        after: after,
-        userId: ctx.session.user.id,
-        type: type,
-      },
+      data: inferPostFormatting(input, ctx.session.user.id),
     });
   }),
 
