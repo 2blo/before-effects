@@ -7,9 +7,7 @@ import { z } from "zod";
  */
 export const serverSchema = z.object({
   DATABASE_URL:
-    process.env.NODE_ENV === "test"
-      ? z.string().url().optional()
-      : z.string().url(),
+    process.env.NODE_ENV === "test" ? z.string().optional() : z.string().url(),
   SHADOW_DATABASE_URL:
     process.env.NODE_ENV === "development"
       ? z.string().url()
