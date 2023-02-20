@@ -10,8 +10,8 @@
     "start": "next start",
     "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down",
-    "test": "npm run docker:up && dotenv -e .env.test -- npx prisma db push && dotenv -e .env.test -- vitest run --coverage & npm run docker:down",
+    "docker:down": "docker compose down",
+    "test": "npm run docker:up && dotenv -e .env.test -- npx prisma db push && dotenv -e .env.test -- npx vitest run --coverage && npm run docker:down",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {

@@ -1,6 +1,5 @@
 # Set the version of docker compose to use
-# version: '3.9'
-version: "2.12"
+version: "2.16"
 
 # The containers that compose the project
 services:
