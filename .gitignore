@@ -43,3 +43,7 @@ yarn-error.log*
 # before-effects
 .out/*
 !.out/.gitkeep
+
+# cypress
+cypress/videos/*
+cypress.env.json

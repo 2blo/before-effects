@@ -25,7 +25,11 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs",
-    "src/utils/config.js"
+    "src/utils/config.js",
+    "cypress/mock-login.js",
+    "cypress/env-to-json.js",
+    "cypress/cy-run.js",
+    "cypress/cleanup-json.js"
   ],
   "exclude": ["node_modules"]
 }

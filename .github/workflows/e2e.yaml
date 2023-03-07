@@ -1,4 +1,4 @@
-name: Node.js vitest CI
+name: Node.js Cypress e2e test
 
 on:
   push:
@@ -24,4 +24,4 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm run build --if-present
-      - run: npm test
+      - run: npm run e2e:headless

@@ -60,7 +60,8 @@ docker exec -it <container id> psql -U prisma tests
 \l
 \c tests
 \dt+
-select * from "Post";
+insert into "User" (id, name) values (2, '2blo');
+select * from "User";
 ```
 
 ## Inspect non-docker-db
