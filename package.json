@@ -14,7 +14,7 @@
     "test:db:push": "dotenv -e .env.test -- npx prisma db push",
     "unit:cov": "npm run docker:up && npm run test:db:push && dotenv -e .env.test -- npx vitest run --coverage && npm run docker:down",
     "cypress": "dotenv -e .env.test -- start-server-and-test start http://localhost:3000 \"cypress open --e2e --browser chrome\"",
-    "cypress:headless": "dotenv -e .env.test -- start-server-and-test start http://localhost:3000 \"node cypress/cy-run.js --e2e\"",
+    "cypress:headless": "dotenv -e .env.test -- start-server-and-test start http://localhost:3000 \"cypress run --e2e\"",
     "e2e:setup": "npm run docker:up && npm run test:db:push && dotenv -e .env.test -- node cypress/mock-login.js && dotenv -e .env.test -- node ./cypress/env-to-json.js",
     "e2e:cleanup": "npm run docker:down && node cypress/cleanup-json.js",
     "e2e": "dotenv -e .env.test -- npm run e2e:setup && npm run cypress && npm run e2e:cleanup",
