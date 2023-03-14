@@ -3,37 +3,68 @@
 ## Local Dev
 
 Clean install:
+
 ```bash
 npm ci
 ```
 
 Install:
+
 ```bash
 npm install
 npm run build
 ```
 
 Update client schema:
+
 ```bash
 npx prisma generate
 ```
 
 Prototype new db schema:
+
 ```bash
 npx prisma db push
 ```
 
 Commit / create initial tables:
+
 ```bash
 npx prisma migrate dev
 ```
 
 Run locally:
+
 ```bash
 npm run dev
 ```
 
-## Inspect db
+## Testing
+
+Testing works in windows `cmd` and `unix`.
+
+1. Configure environment variables in [.env.test](https://www.prisma.io/docs/guides/testing/integration-testing).
+2. start docker (desktop)
+3. Run tests:
+
+```bash
+npm run test
+```
+
+4. (Optional) Inpsect docker db:
+
+```bash
+npm run docker:up
+docker ps
+docker exec -it <container id> psql -U prisma tests
+\l
+\c tests
+\dt+
+insert into "User" (id, name) values (2, '2blo');
+select * from "User";
+```
+
+## Inspect non-docker-db
 
 Print a table, with 1 optional `WHERE` selection:
 
@@ -71,6 +102,7 @@ Warning: Preview deployments have "random" URLs that wont be listed in [Google C
 - `production` (branch: main)
 - `preview` (branch: feature->main)
 - `dev` - [store dev env vars](https://vercel.com/docs/concepts/projects/environment-variables#development-environment-variables), download with:
+
 ```bash
 npx vercel env pull
 ```

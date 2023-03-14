@@ -18,10 +18,7 @@ type EditInput = RouterInputs["post"]["edit"];
 
 const ManagePost: NextPage<{ post?: EditInput }> = ({ post }) => {
   const router = useRouter();
-  const { data: sessionData, status: status } = useSession();
-  if (post && status == "unauthenticated") {
-    router.replace("/");
-  }
+  const { data: sessionData } = useSession();
 
   type UploadInput = RouterInputs["post"]["upload"];
 
