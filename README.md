@@ -2,33 +2,45 @@
 
 ## Local Dev
 
+Setup linting etc:
+
+```bash
+npm run setup
+```
+
 Clean install:
+
 ```bash
 npm ci
 ```
 
 Install:
+
 ```bash
 npm install
 npm run build
 ```
 
 Update client schema:
+
 ```bash
 npx prisma generate
 ```
 
 Prototype new db schema:
+
 ```bash
 npx prisma db push
 ```
 
 Commit / create initial tables:
+
 ```bash
 npx prisma migrate dev
 ```
 
 Run locally:
+
 ```bash
 npm run dev
 ```
@@ -71,6 +83,7 @@ Warning: Preview deployments have "random" URLs that wont be listed in [Google C
 - `production` (branch: main)
 - `preview` (branch: feature->main)
 - `dev` - [store dev env vars](https://vercel.com/docs/concepts/projects/environment-variables#development-environment-variables), download with:
+
 ```bash
 npx vercel env pull
 ```

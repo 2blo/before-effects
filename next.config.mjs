@@ -1,3 +1,4 @@
+import MillionLint from '@million/lint';
 // @ts-check
 // import { remotePatterns } from "./src/utils/config.js";
 import { remotePatterns } from "./src/utils/config.js";
@@ -14,11 +15,10 @@ const config = {
   swcMinify: true,
   i18n: {
     locales: ["en"],
-    defaultLocale: "en",
+    defaultLocale: "en"
   },
   images: {
-    remotePatterns: remotePatterns,
-  },
+    remotePatterns: remotePatterns
+  }
 };
-
-export default config;
+export default MillionLint.next()(config);

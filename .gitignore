@@ -43,3 +43,7 @@ yarn-error.log*
 # before-effects
 .out/*
 !.out/.gitkeep
+# Million Lint
+.million
+cypress/videos
+cypress.env.json
