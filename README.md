@@ -2,6 +2,8 @@
 
 ## Local Dev
 
+To enable hot reloading from Devcontainers, clone the repo to a non mounted directory in WSL and open in VS Code.
+
 Setup linting etc:
 
 ```bash
