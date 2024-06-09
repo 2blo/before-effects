@@ -86,7 +86,7 @@ export const Splitscreen: React.FC<SplitscreenProps> = ({
 
   const onLoadingComplete = (
     naturalWidth: number,
-    naturalHeight: number
+    naturalHeight: number,
   ): void => {
     const naturalRatio = naturalWidth / naturalHeight;
     const maxRatio =

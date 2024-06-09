@@ -22,7 +22,7 @@ const defaultPostSelect = Prisma.validator<Prisma.PostSelect>()({
 
 function inferPostFormatting(
   input: z.infer<typeof uploadInputSchema>,
-  userId: string
+  userId: string,
 ) {
   const beforeId = getVideoId(input.before);
   const afterId = getVideoId(input.after);
@@ -65,7 +65,7 @@ export const postRouter = router({
     .input(
       z.object({
         id: z.string(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const { id } = input;
@@ -103,7 +103,7 @@ export const postRouter = router({
     .input(
       z.object({
         id: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const { id } = input;

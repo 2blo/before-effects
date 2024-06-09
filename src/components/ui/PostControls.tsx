@@ -20,7 +20,7 @@ const PostControl: React.FC<PostControlProps> = ({ ...props }) => {
     onSuccess() {
       if (sessionData?.user === undefined) {
         throw new TRPCClientError(
-          "Unexpected unauthorized error, the server should have thrown an error first."
+          "Unexpected unauthorized error, the server should have thrown an error first.",
         );
       } else {
         utils.post.listByUser.invalidate({ userId: sessionData.user.id });
@@ -51,7 +51,7 @@ const PostControl: React.FC<PostControlProps> = ({ ...props }) => {
                   type: props.post.type,
                 },
               },
-              "/edit"
+              "/edit",
             );
           }}
         ></MenuDropDown>

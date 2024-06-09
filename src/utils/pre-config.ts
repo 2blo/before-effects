@@ -6,7 +6,7 @@ const remotePatternSchema = z.array(
     protocol: z.enum(protocols),
     hostname: z.string(),
     pathname: z.string(),
-  })
+  }),
 );
 
 export type RemotePatterns = z.infer<typeof remotePatternSchema>;

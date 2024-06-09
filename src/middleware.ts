@@ -13,7 +13,7 @@ const ratelimit = new Ratelimit({
 
 export default async function middleware(
   request: NextRequest,
-  event: NextFetchEvent
+  event: NextFetchEvent,
 ) {
   const ip = request.ip ?? "127.0.0.1";
 
@@ -22,7 +22,7 @@ export default async function middleware(
   }
 
   const { success, pending, limit, reset, remaining } = await ratelimit.limit(
-    `mw_${ip}`
+    `mw_${ip}`,
   );
   event.waitUntil(pending);
 

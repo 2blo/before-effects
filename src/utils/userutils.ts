@@ -3,14 +3,14 @@ import { useEffect } from "react";
 
 export function SortByDescendingDate(posts: Array<Post>) {
   return posts.sort(
-    (a: Post, b: Post) => -(a.createdAt.getTime() - b.createdAt.getTime())
+    (a: Post, b: Post) => -(a.createdAt.getTime() - b.createdAt.getTime()),
   );
 }
 
 export function usePersistForm<T>(
   value: T,
   localStorageKey: string,
-  enable: boolean
+  enable: boolean,
 ) {
   useEffect(() => {
     if (enable) {

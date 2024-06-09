@@ -69,5 +69,5 @@ export function getVideoId(url: string) {
 
 export const editInputSchema = z.intersection(
   uploadInputSchema,
-  z.object({ id: z.string().cuid() })
+  z.object({ id: z.string().cuid() }),
 );

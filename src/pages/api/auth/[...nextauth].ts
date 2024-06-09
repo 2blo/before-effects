@@ -26,7 +26,7 @@ if (
         },
       },
       from: process.env.EMAIL_FROM,
-    })
+    }),
   );
 }
 if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
@@ -34,7 +34,7 @@ if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
-    })
+    }),
   );
 }
 

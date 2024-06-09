@@ -96,7 +96,7 @@ const ManagePost: NextPage<{ post?: EditInput }> = ({ post }) => {
   usePersistForm<UploadInput>(
     methods.watch(),
     FORM_DATA_KEY,
-    !(post || submitting)
+    !(post || submitting),
   );
 
   return (

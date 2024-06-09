@@ -40,7 +40,7 @@ const descendingPosts = [recent, mid, old];
 
 test("Ascending sorted equals reverse.", () => {
   expect(SortByDescendingDate(ascendingPosts.slice())).toStrictEqual(
-    ascendingPosts.slice().reverse()
+    ascendingPosts.slice().reverse(),
   );
 });
 
@@ -48,13 +48,13 @@ test.fails(
   "Sorted not equals unsorted (verify not reference comparison).",
   () => {
     expect(SortByDescendingDate(ascendingPosts.slice())).toStrictEqual(
-      ascendingPosts.slice()
+      ascendingPosts.slice(),
     );
-  }
+  },
 );
 
 test("Descending unchanged.", () => {
   expect(SortByDescendingDate(descendingPosts.slice())).toStrictEqual(
-    descendingPosts.slice()
+    descendingPosts.slice(),
   );
 });

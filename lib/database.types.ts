@@ -4,6 +4,6 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json }
-  | Json[]
+  | Json[];
 // @typescript-eslint:disable-next-line
 export interface Database {} // tslint:disable-line
