@@ -27,7 +27,5 @@ const imageRegex = new RegExp(
   "i"
 );
 
-module.exports = {
-  remotePatterns: remotePatterns,
-  imageRegex: imageRegex,
-};
+
+export { remotePatterns };

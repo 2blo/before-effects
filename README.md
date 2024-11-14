@@ -2,33 +2,32 @@
 
 ## Local Dev
 
-Clean install:
-```bash
-npm ci
-```
+Get environment variables at [Vercel](https://vercel.com/2blos-projects/before-effects/settings/environment-variables) and save them in `.env`.
 
-Install:
 ```bash
-npm install
-npm run build
-```
+
+See [package.json](package.json) for scripts.
 
 Update client schema:
+
 ```bash
 npx prisma generate
 ```
 
 Prototype new db schema:
+
 ```bash
 npx prisma db push
 ```
 
 Commit / create initial tables:
+
 ```bash
 npx prisma migrate dev
 ```
 
 Run locally:
+
 ```bash
 npm run dev
 ```
@@ -66,21 +65,22 @@ Warning: Preview deployments have "random" URLs that wont be listed in [Google C
 - `main`
 - `feature/x`
 
-## Vercel Deployments / Env Vars:
+## Vercel Deployments / Env Vars
 
 - `production` (branch: main)
 - `preview` (branch: feature->main)
 - `dev` - [store dev env vars](https://vercel.com/docs/concepts/projects/environment-variables#development-environment-variables), download with:
+
 ```bash
 npx vercel env pull
 ```
 
-## Local Deployments / Env Vars:
+## Local Deployments / Env Vars
 
 - `dev` (db: dev)
 - `npx prisma migrate` (db: dev + shadow)
 
-## Auth:
+## Auth
 
 - `Google` for Main `before-effects.vercel.app` and local dev `localhost:3000`.
 - `Email` for preview.
